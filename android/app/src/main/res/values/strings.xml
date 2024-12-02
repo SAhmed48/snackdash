@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Sahlah</string>
+    <string name="facebook_app_id">1244611243483618</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">de233bf7f17e736a0a4a9d7e4ce757f1</string>
+</resources>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1043161679400",
+    "project_id": "sahlah-edb6f",
+    "storage_bucket": "sahlah-edb6f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043161679400:android:6dc15daf753902fba0171d",
+        "android_client_info": {
+          "package_name": "com.jarvis.sahlah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1043161679400-n0dlq5d4689c3snam1h2t309s13v92j8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jarvis.sahlah",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "1043161679400-s95di5nu55sskm8icmmfroeeho02lfet.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6JrpMneO5H2iWxO8KQCtCHXvwOWz7mOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1043161679400-s95di5nu55sskm8icmmfroeeho02lfet.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
