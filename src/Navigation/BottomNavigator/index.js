@@ -19,11 +19,15 @@ import Card from '../../Screens/AddCard';
 import Settings from '../../Screens/Settings';
 import Language from '../../Screens/Language';
 import MyLocation from '../../Screens/MyLocation';
-import { verticalScale, horizontalScale } from '../../Utils/ScaleSize';
+import {verticalScale} from '../../Utils/ScaleSize';
+import {useSelector} from 'react-redux';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
   const navigation = useNavigation();
+  const setAddToCartDetails = useSelector(
+    state => state.Reducer.setAddToCartDetails,
+  );
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -136,9 +140,33 @@ const TabNavigator = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
+                {setAddToCartDetails.length > 0 && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: verticalScale(40),
+                      overflow: 'visible',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 25,
+                      borderRadius: 30,
+                      backgroundColor: 'red',
+                      height: 25,
+                    }}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: 16,
+                        textAlign: 'center',
+                        fontFamily: 'Poppins-Medium',
+                      }}>
+                      {setAddToCartDetails.length}
+                    </Text>
+                  </View>
+                )}
                 <FontAwesome
                   name={'shopping-basket'}
-                  size={25}
+                  size={23}
                   color={'white'}
                 />
               </View>

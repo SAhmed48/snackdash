@@ -34,10 +34,10 @@ const Reducer = (state = initialData, action) => {
       };
     case REMOVE_ITEM_CART:
       return {
-        ...state,
         setAddToCartDetails: state.setAddToCartDetails.filter(
           item => item.id !== action.payload,
         ),
+        ...state,
       };
     case SET_ITEM_TOTAL:
       return {

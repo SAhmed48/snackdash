@@ -20,6 +20,9 @@ const Settings = () => {
   const [profilePic, setProfilePic] = React.useState(null);
   const authData = useSelector(state => state.Reducer.authData);
   const {profileSettingsInput} = useInputData();
+  React.useEffect(() => {
+    console.log(authData)
+  }, [authData])
   const pickImage = async () => {
     await launchImageLibrary(
       {
@@ -37,7 +40,7 @@ const Settings = () => {
   const renderItemFeilds = profileSettingsInput => {
     return profileSettingsInput.map(({feild, keyBoardType}) => {
       return (
-        <View style={styles.inputTextView}>
+        <View style={styles.inputTextView} key={feild}>
           <View style={styles.placeHolderTextView}>
             <Text style={styles.placeHolderTextStyle}>{feild}</Text>
             <View style={styles.editIconStyle}>
@@ -73,6 +76,7 @@ const Settings = () => {
       {renderItemFeilds(profileSettingsInput)}
       <View style={{alignItems: 'center', marginTop: verticalScale(40)}}>
         <TouchableOpacity
+          onPress={() => console.log(authData)}
           style={{
             alignItems: 'center',
             justifyContent: 'center',

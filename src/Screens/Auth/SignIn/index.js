@@ -28,8 +28,8 @@ import SocialBtn from '../../../Components/Button/SocialBtn';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {horizontalScale} from '../../../Utils/ScaleSize';
-import { useDispatch } from 'react-redux';
-import { setAuthCredential } from '../../../Redux/Action';
+import {useDispatch} from 'react-redux';
+import {setAuthCredential} from '../../../Redux/Action';
 
 const SignIn = () => {
   const [username, setUserName] = React.useState('');
@@ -75,9 +75,9 @@ const SignIn = () => {
         name: username,
         emailSend: email,
         code: password,
-      }
-      dispatch(setAuthCredential(data))
-      console.log(data)
+      };
+      dispatch(setAuthCredential(data));
+      console.log(data);
       navigation.navigate('Tab');
     } catch (error) {
       console.log(error);
@@ -162,8 +162,15 @@ const SignIn = () => {
       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
       const {idToken} = (await GoogleSignin.signIn()).data;
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      await auth().signInWithCredential(googleCredential);
+      const result = await auth().signInWithCredential(googleCredential);
+      console.log(googleCredential);
+      console.log(result.user.displayName);
+      const data = {
+        name: result.user.displayName
+      }
+      dispatch(setAuthCredential(data))
       navigation.navigate('Tab');
+      return result;
     } catch (error) {
       console.log(error);
     }

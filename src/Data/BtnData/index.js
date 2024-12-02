@@ -41,7 +41,67 @@ const socialBtnDataSign = [
     id: 2,
     image: Images.Google,
     title: 'Sign Up with Google',
-  }
+  },
 ];
 
-export {socialBtnData, AuthenticatedBtnData, socialBtnDataSign};
+const CategoryData = [
+  {
+    id: 1,
+    title: 'Fast Food',
+  },
+  {
+    id: 2,
+    title: 'Sea Food',
+  },
+  {
+    id: 3,
+    title: 'Dessert',
+  },
+];
+
+const locationData = [
+  {
+    id: 1,
+    title: '1 Km',
+  },
+  {
+    id: 2,
+    title: '< 10 Km',
+  },
+  {
+    id: 3,
+    title: '> 10 Km',
+  },
+];
+
+const foodData = [
+  {
+    id: 1,
+    title: 'Pizza',
+  },
+  {
+    id: 2,
+    title: 'Burger',
+  },
+  {
+    id: 3,
+    title: 'Main Dishes',
+  },
+  {
+    id: 4,
+    title: 'Meat Kreep',
+  },
+  {
+    id: 5,
+    title: 'Dessert',
+  }
+]
+
+export {
+  socialBtnData,
+  AuthenticatedBtnData,
+  socialBtnDataSign,
+  CategoryData,
+  locationData,
+  foodData,
+};

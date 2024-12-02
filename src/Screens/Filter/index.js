@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import React, {useState, useRef, useCallback} from 'react';
 import Slider from 'rn-range-slider';
+import {fontScale, horizontalScale, verticalScale} from '../../Utils/ScaleSize';
+import {CategoryData, foodData, locationData} from '../../Data/BtnData';
 
 const RenderThumb = () => <View style={styles.thumb} />;
 const RenderRail = () => <View style={styles.rail} />;
@@ -30,7 +32,9 @@ const Filter = () => {
   const [value, setValue] = useState(0);
   const [low, setLow] = useState(0);
   const [high, setHigh] = useState(100);
-
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedFood, setSelectedFood] = useState(null);
   const stepperAnim = useRef(new Animated.Value(0)).current;
   const railFillAnim = useRef(new Animated.Value(0)).current;
 
@@ -63,19 +67,25 @@ const Filter = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#f6f6f6'} barStyle={'dark-content'} />
-      <View style={{width: '100%', height: 70, backgroundColor: '#f6f6f6'}} />
+      <View
+        style={{
+          width: '100%',
+          height: verticalScale(65),
+          backgroundColor: '#f6f6f6',
+        }}
+      />
       <View style={{alignItems: 'center'}}>
         <View
           style={{
-            marginTop: 35,
-            width: 330,
+            marginTop: verticalScale(35),
+            width: horizontalScale(330),
             alignItems: 'center',
             justifyContent: 'space-between',
             flexDirection: 'row',
           }}>
           <Text
             style={{
-              fontSize: 14,
+              fontSize: fontScale(14),
               fontFamily: 'Poppins-Medium',
               color: 'black',
             }}>
@@ -84,7 +94,7 @@ const Filter = () => {
           <Text
             style={{
               fontFamily: 'Poppins-Medium',
-              fontSize: 14,
+              fontSize: fontScale(14),
               color: 'black',
             }}>
             ${low} - ${high}
@@ -109,15 +119,15 @@ const Filter = () => {
       <View style={{alignItems: 'center'}}>
         <View
           style={{
-            marginTop: 30,
-            width: 330,
+            marginTop: verticalScale(35),
+            width: horizontalScale(330),
             alignItems: 'center',
             justifyContent: 'space-between',
             flexDirection: 'row',
           }}>
           <Text
             style={{
-              fontSize: 14,
+              fontSize: fontScale(14),
               fontFamily: 'Poppins-Medium',
               color: 'black',
             }}>
@@ -126,7 +136,7 @@ const Filter = () => {
           <Text
             style={{
               fontFamily: 'Poppins-Medium',
-              fontSize: 14,
+              fontSize: fontScale(14),
               color: 'black',
             }}>
             {value}%
@@ -156,277 +166,160 @@ const Filter = () => {
           ]}
         />
       </View>
-      <View style={{marginTop: 40}}>
+      <View style={{marginTop: verticalScale(40)}}>
         <View style={{alignItems: 'center'}}>
           <View
             style={{
-              width: 330,
+              width: horizontalScale(330),
             }}>
-            <Text style={{fontFamily: 'Poppins-Medium', fontSize: 13}}>
+            <Text
+              style={{fontFamily: 'Poppins-Medium', fontSize: fontScale(14)}}>
               Category
             </Text>
           </View>
         </View>
-        <View style={{alignItems: 'center', marginTop: 10}}>
+        <View style={{alignItems: 'center', marginTop: verticalScale(15)}}>
           <View
             style={{
               flexDirection: 'row',
-              width: 350,
+              width: horizontalScale(350),
               alignItems: 'center',
               justifyContent: 'space-around',
             }}>
-            <TouchableOpacity
-              style={{
-                width: 100,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
+            {CategoryData.map((item, index) => (
+              <TouchableOpacity
+                onPress={() => setSelectedItem(item.title === selectedItem ? null : item.title)}
+                key={index}
                 style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
+                  width: horizontalScale(100),
+                  height: verticalScale(40),
+                  backgroundColor: selectedItem === item.title ? '#33b056' : '#f6f6f6',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 10,
                 }}>
-                Fast Food
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 100,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
-                }}>
-                Fast Food
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 100,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
-                }}>
-                Fast Food
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    fontFamily: 'Poppins-Medium',
+                    color: selectedItem === item.title ? 'white' : 'grey',
+                    fontSize: fontScale(12),
+                  }}>
+                  {item.title}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </View>
-      <View style={{marginTop: 25}}>
+      <View style={{marginTop: verticalScale(30)}}>
         <View style={{alignItems: 'center'}}>
           <View
             style={{
-              width: 330,
+              width: horizontalScale(330),
             }}>
-            <Text style={{fontFamily: 'Poppins-Medium', fontSize: 13}}>
+            <Text
+              style={{fontFamily: 'Poppins-Medium', fontSize: fontScale(14)}}>
               Location
             </Text>
           </View>
         </View>
-        <View style={{alignItems: 'center', marginTop: 10}}>
+        <View style={{alignItems: 'center', marginTop: verticalScale(15)}}>
           <View
             style={{
               flexDirection: 'row',
-              width: 330,
-              gap: 10,
+              width: horizontalScale(330),
+              gap: horizontalScale(20),
               justifyContent: 'flex-start',
             }}>
-            <TouchableOpacity
-              style={{
-                width: 80,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
+            {locationData.map((item, index) => (
+              <TouchableOpacity
+                onPress={() => setSelectedLocation(item.id === selectedLocation ? null : item.id)}
+                key={index}
                 style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
+                  width: horizontalScale(80),
+                  height: verticalScale(40),
+                  backgroundColor: selectedLocation === item.id ? '#33b056' : '#f6f6f6',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 10,
                 }}>
-                1 Km
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 80,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
-                }}>
-                10 Km
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 80,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
-                }}>
-                10 Km
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    fontFamily: 'Poppins-Medium',
+                    color: selectedLocation === item.id ? 'white' : 'grey',
+                    fontSize: fontScale(12),
+                  }}>
+                  {item.title}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </View>
-      <View style={{marginTop: 25}}>
+      <View style={{marginTop: verticalScale(30)}}>
         <View style={{alignItems: 'center'}}>
           <View
             style={{
-              width: 330,
+              width: horizontalScale(330),
             }}>
-            <Text style={{fontFamily: 'Poppins-Medium', fontSize: 13}}>
+            <Text
+              style={{fontFamily: 'Poppins-Medium', fontSize: fontScale(14)}}>
               Food
             </Text>
           </View>
         </View>
-        <View style={{alignItems: 'center', marginTop: 10}}>
+        <View style={{alignItems: 'center', marginTop: verticalScale(10)}}>
           <View
             style={{
               flexDirection: 'row',
-              width: 330,
-              height: 110,
+              width: horizontalScale(330),
+              height: verticalScale(110),
               flexWrap: 'wrap',
-              gap: 20,
+              alignItems: 'center',
+              gap: horizontalScale(15),
               justifyContent: 'flex-start',
             }}>
-            <TouchableOpacity
-              style={{
-                width: 80,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
+            {foodData.map((item, index) => (
+              <TouchableOpacity
+                onPress={() => setSelectedFood(item.id === selectedFood ? null : item.id)}
+                key={index}
                 style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
+                  width: horizontalScale(100),
+                  height: verticalScale(50),
+                  backgroundColor: selectedFood === item.id ? '#33b056' : '#f6f6f6',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 10,
                 }}>
-                Pizza
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 80,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
-                }}>
-                Burger
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 110,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
-                }}>
-                Main Dishes
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 110,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
-                }}>
-                Main Dishes
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 110,
-                height: 40,
-                backgroundColor: '#f6f6f6',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: 'grey',
-                  fontSize: 12,
-                }}>
-                Main Dishes
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    fontFamily: 'Poppins-Medium',
+                    color: selectedFood === item.id ? 'white' : 'grey',
+                    fontSize: fontScale(13),
+                  }}>
+                  {item.title}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </View>
-      <View style={{alignItems: 'center', marginTop: 50}}>
+      <View style={{alignItems: 'center', marginTop: verticalScale(70)}}>
         <TouchableOpacity
+          onPress={() => {
+            const data = {
+              low,
+              high,
+              value,
+              selectedItem,
+              selectedLocation,
+              selectedFood,
+            };
+            console.log(data);
+          }}
           style={{
-            width: 285,
-            height: 42,
+            width: horizontalScale(300),
+            height: verticalScale(50),
             backgroundColor: '#33b056',
             alignItems: 'center',
             justifyContent: 'center',
@@ -434,8 +327,8 @@ const Filter = () => {
           }}>
           <Text
             style={{
-              fontFamily: 'Poppins-Regular',
-              fontSize: 17,
+              fontFamily: 'Poppins-Medium',
+              fontSize: fontScale(18),
               color: 'white',
             }}>
             Search
@@ -459,34 +352,34 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   slider: {
-    marginTop: 30,
-    height: 5,
-    width: '82%',
+    marginTop: verticalScale(35),
+    height: verticalScale(5),
+    width: horizontalScale(330),
     marginLeft: 'auto',
     marginRight: 'auto',
     position: 'relative',
   },
   rail: {
-    height: 6,
+    height: verticalScale(6),
     width: '100%',
     backgroundColor: '#DBDBDB',
     borderRadius: 5,
   },
   railSelected: {
-    height: 6,
+    height: verticalScale(6),
     backgroundColor: '#33b056',
     borderRadius: 5,
   },
   stepper: {
-    width: 20,
-    height: 20,
+    width: horizontalScale(20),
+    height: verticalScale(20),
     backgroundColor: '#33b056',
     position: 'absolute',
-    top: -7,
+    top: verticalScale(-7),
     borderRadius: 9,
   },
   railFill: {
-    height: 5,
+    height: verticalScale(6),
     backgroundColor: '#33b056',
     position: 'absolute',
     left: 0,
@@ -520,7 +413,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   rangeSlider: {
-    width: '87%',
+    width: horizontalScale(340),
     marginTop: 20,
   },
 });

@@ -9,6 +9,7 @@ import {
   Animated,
   FlatList,
   Pressable,
+  ToastAndroid,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import Geocoder from 'react-native-geocoding';
@@ -18,7 +19,6 @@ import {useNavigation} from '@react-navigation/native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {setAddToCartData, setData} from '../../Redux/Action';
-import {useVoiceNavigation} from 'react-native-voice-command';
 import styles from './styles';
 import Images from '../../Constants/Images';
 import Feather from 'react-native-vector-icons/Feather';
@@ -88,9 +88,17 @@ const Home = () => {
     console.log(details);
   };
 
-  const getAddToCartDetails = data => {
+  const getAddToCartDetails = async data => {
     dispatch(setAddToCartData(data));
-    console.log(data);
+    const foodData = {
+      name: data,
+      price: 20,
+    }
+    await firestore().collection('SelectedFood').doc('vhrtZyT6VdlotscaYY4y').set({
+      items: firestore.FieldValue.arrayUnion(foodData)
+    }, {merge: true});
+    ToastAndroid.show('Item Added to Cart', ToastAndroid.SHORT);
+    console.log(foodData, data);
   };
 
   const renderData = ({item, index}) => {
