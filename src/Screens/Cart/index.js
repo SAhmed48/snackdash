@@ -15,10 +15,9 @@ import {useSelector, useDispatch} from 'react-redux';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {horizontalScale, verticalScale} from '../../Utils/ScaleSize';
-import {setItemTotal} from '../../Redux/Action';
+import {removeItemCart, setItemTotal} from '../../Redux/Action';
 
 const Cart = () => {
-  const [data, setData] = React.useState([]);
   const [currentTime, setCurrentTime] = React.useState(Date.now());
   const [totalPrice, setTotalPrice] = React.useState(0);
   const [deliveryFees, setDeliveryFees] = React.useState(0);
@@ -31,20 +30,18 @@ const Cart = () => {
 
   React.useEffect(() => {
     if (setAddToCartDetails && Object.keys(setAddToCartDetails).length > 0) {
-      const uniqueItems = Array.from(
-        new Set(setAddToCartDetails.map(item => JSON.stringify(item))),
-      )
-        .map(item => JSON.parse(item))
-        .map((item, index) => ({
-          ...item,
-          name: item,
-          id: index.toString(),
-          count: 1,
-          price: 20,
-          timestamp: Date.now(),
-        }));
-      setData(uniqueItems);
-      console.log(data);
+      Array.from(
+        new Set(
+          setAddToCartDetails.map((item, index) => ({
+            ...item,
+            name: item,
+            id: index.toString(),
+            count: 1,
+            price: 20,
+            timestamp: Date.now(),
+          })),
+        ),
+      );
       console.log(setAddToCartDetails);
     }
   }, [setAddToCartDetails]);
@@ -60,10 +57,13 @@ const Cart = () => {
 
   React.useEffect(() => {
     calculateTotalPrice();
-  }, [data]);
+  }, [setAddToCartDetails]);
 
   const calculateTotalPrice = () => {
-    const total = data.reduce((sum, item) => sum + item.count * item.price, 0);
+    const total = setAddToCartDetails.reduce(
+      (sum, item) => sum + item.count * item.price,
+      0,
+    );
     setItem(total);
     setDeliveryFees(total > 0 ? 30 : 0);
     setTotalPrice(total + (total > 0 ? 30 : 0));
@@ -87,7 +87,7 @@ const Cart = () => {
         ? `${timeElapsed} min`
         : `${Math.floor(timeElapsed / 60)} hr`;
     if (id) {
-      data.map(item => {
+      setAddToCartDetails.map(item => {
         if (item.id === id) return {...item, timestamp: Date.now()};
       });
     }
@@ -95,24 +95,22 @@ const Cart = () => {
   };
 
   const updateCount = (id, operation) => {
-    setData(prevData =>
-      prevData.map(item => {
-        if (item.id === id) {
-          const updatedCount =
-            operation === 'increment'
-              ? item.count + 1
-              : Math.max(0, item.count - 1);
-          return {...item, count: updatedCount};
-        }
-        return item;
-      }),
-    );
+    // setData(prevData =>
+    //   prevData.map(item => {
+    //     if (item.id === id) {
+    //       const updatedCount =
+    //         operation === 'increment'
+    //           ? item.count + 1
+    //           : Math.max(0, item.count - 1);
+    //       return {...item, count: updatedCount};
+    //     }
+    //     return item;
+    //   }),
+    // );
   };
 
   const onDelete = id => {
-    setData(prevData =>
-      prevData.filter(item => item.id !== id),
-    );
+    dispatch(removeItemCart(id));
   };
 
   const renderItem = ({item, index}) => {
@@ -121,140 +119,138 @@ const Cart = () => {
       <View
         style={{alignItems: 'center', marginTop: verticalScale(20)}}
         key={index}>
-        <Pressable onPress={() => onDelete(item.id)}>
-          <Swipeable
-            renderRightActions={() => rightSwipeActions(item.id)}
-            overshootRight={false}
-            overshootLeft={false}
-            friction={2}
-            rightThreshold={40}>
-            <View style={styles.itemContainer}>
+        <Swipeable
+          renderRightActions={() => rightSwipeActions(item.id)}
+          overshootRight={false}
+          overshootLeft={false}
+          friction={2}
+          rightThreshold={40}>
+          <View style={styles.itemContainer}>
+            <View
+              style={{
+                zIndex: 5,
+                alignSelf: 'flex-end',
+                marginRight: horizontalScale(20),
+                gap: horizontalScale(5),
+                top: verticalScale(20),
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <MaterialIcons name={'access-time'} size={16} color={'green'} />
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  fontSize: verticalScale(12),
+                }}>
+                {timeDisplay}
+              </Text>
+            </View>
+            <View
+              style={{
+                alignItems: 'center',
+              }}>
               <View
                 style={{
-                  zIndex: 5,
-                  alignSelf: 'flex-end',
-                  marginRight: horizontalScale(20),
-                  gap: horizontalScale(5),
-                  top: verticalScale(20),
+                  overflow: 'visible',
+                  width: horizontalScale(320),
+                  zIndex: 1,
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                <MaterialIcons name={'access-time'} size={16} color={'green'} />
-                <Text
+                <Image
+                  source={require('../../Assets/Images/miniZing.png')}
                   style={{
-                    fontFamily: 'Poppins-Regular',
-                    fontSize: verticalScale(12),
-                  }}>
-                  {timeDisplay}
-                </Text>
-              </View>
-              <View
-                style={{
-                  alignItems: 'center',
-                }}>
+                    width: horizontalScale(80),
+                    height: verticalScale(80),
+                  }}
+                />
+                <View style={{marginLeft: horizontalScale(15)}}>
+                  <Text style={{fontFamily: 'Poppins-Medium', fontSize: 15}}>
+                    {item.name}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: 'Poppins-Medium',
+                      fontSize: verticalScale(14),
+                      color: 'grey',
+                    }}>
+                    Burger King
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: 'Poppins-Bold',
+                      fontSize: verticalScale(15),
+                      color: '#029a26',
+                    }}>
+                    {item.price * item.count}{' '}
+                    {<Text style={{fontSize: verticalScale(12)}}>PKR</Text>}
+                  </Text>
+                </View>
                 <View
                   style={{
-                    overflow: 'visible',
-                    width: horizontalScale(320),
-                    zIndex: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    alignSelf: 'flex-end',
+                    marginLeft: horizontalScale(50),
                   }}>
-                  <Image
-                    source={require('../../Assets/Images/miniZing.png')}
+                  <View
                     style={{
-                      width: horizontalScale(80),
-                      height: verticalScale(80),
-                    }}
-                  />
-                  <View style={{marginLeft: horizontalScale(15)}}>
-                    <Text style={{fontFamily: 'Poppins-Medium', fontSize: 15}}>
-                      {item.name}
-                    </Text>
+                      flexDirection: 'row',
+                      backgroundColor: '#f8f8f8',
+                      alignItems: 'center',
+                      width: horizontalScale(90),
+                      borderRadius: 40,
+                      justifyContent: 'space-between',
+                    }}>
+                    <TouchableOpacity
+                      onPress={() => updateCount(item.id, 'decrement')}
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: horizontalScale(30),
+                        height: verticalScale(30),
+                        backgroundColor: '#e6f5ed',
+                        borderRadius: 30,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: verticalScale(20),
+                          fontFamily: 'Poppins-Medium',
+                          color: '#2dae51',
+                        }}>
+                        -
+                      </Text>
+                    </TouchableOpacity>
                     <Text
                       style={{
                         fontFamily: 'Poppins-Medium',
-                        fontSize: verticalScale(14),
-                        color: 'grey',
-                      }}>
-                      Burger King
-                    </Text>
-                    <Text
-                      style={{
-                        fontFamily: 'Poppins-Bold',
                         fontSize: verticalScale(15),
-                        color: '#029a26',
                       }}>
-                      {item.price * item.count}{' '}
-                      {<Text style={{fontSize: verticalScale(12)}}>PKR</Text>}
+                      {item.count}
                     </Text>
-                  </View>
-                  <View
-                    style={{
-                      alignSelf: 'flex-end',
-                      marginLeft: horizontalScale(50),
-                    }}>
-                    <View
+                    <TouchableOpacity
+                      onPress={() => updateCount(item.id, 'increment')}
                       style={{
-                        flexDirection: 'row',
-                        backgroundColor: '#f8f8f8',
                         alignItems: 'center',
-                        width: horizontalScale(90),
-                        borderRadius: 40,
-                        justifyContent: 'space-between',
+                        justifyContent: 'center',
+                        width: horizontalScale(30),
+                        height: verticalScale(30),
+                        backgroundColor: '#33b056',
+                        borderRadius: 30,
                       }}>
-                      <TouchableOpacity
-                        onPress={() => updateCount(item.id, 'decrement')}
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: horizontalScale(30),
-                          height: verticalScale(30),
-                          backgroundColor: '#e6f5ed',
-                          borderRadius: 30,
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: verticalScale(20),
-                            fontFamily: 'Poppins-Medium',
-                            color: '#2dae51',
-                          }}>
-                          -
-                        </Text>
-                      </TouchableOpacity>
                       <Text
                         style={{
+                          fontSize: verticalScale(20),
                           fontFamily: 'Poppins-Medium',
-                          fontSize: verticalScale(15),
+                          color: 'white',
                         }}>
-                        {item.count}
+                        +
                       </Text>
-                      <TouchableOpacity
-                        onPress={() => updateCount(item.id, 'increment')}
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: horizontalScale(30),
-                          height: verticalScale(30),
-                          backgroundColor: '#33b056',
-                          borderRadius: 30,
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: verticalScale(20),
-                            fontFamily: 'Poppins-Medium',
-                            color: 'white',
-                          }}>
-                          +
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
             </View>
-          </Swipeable>
-        </Pressable>
+          </View>
+        </Swipeable>
       </View>
     );
   };
@@ -284,10 +280,10 @@ const Cart = () => {
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <SafeAreaView style={styles.container}>
-        {data.length > 0 ? (
+        {setAddToCartDetails.length > 0 ? (
           <>
             <FlatList
-              data={data}
+              data={setAddToCartDetails}
               renderItem={renderItem}
               keyExtractor={item => item.id}
             />
