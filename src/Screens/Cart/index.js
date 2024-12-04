@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   Pressable,
+  ToastAndroid,
 } from 'react-native';
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -16,6 +17,7 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {horizontalScale, verticalScale} from '../../Utils/ScaleSize';
 import {removeItemCart, setItemTotal} from '../../Redux/Action';
+import {SET_ADD_TO_CART_DETAILS} from '../../Constants/SetData';
 
 const Cart = () => {
   const [currentTime, setCurrentTime] = React.useState(Date.now());
@@ -29,22 +31,15 @@ const Cart = () => {
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    if (setAddToCartDetails && Object.keys(setAddToCartDetails).length > 0) {
-      Array.from(
-        new Set(
-          setAddToCartDetails.map((item, index) => ({
-            ...item,
-            name: item,
-            id: index.toString(),
-            count: 1,
-            price: 20,
-            timestamp: Date.now(),
-          })),
-        ),
-      );
-      console.log(setAddToCartDetails);
-    }
+    arrayItems();
   }, [setAddToCartDetails]);
+
+  const arrayItems = () => {
+    if (setAddToCartDetails && Object.keys(setAddToCartDetails).length > 0) {
+      const uniqueItems = new Set();
+      uniqueItems.add(setAddToCartDetails);
+    }
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -95,22 +90,18 @@ const Cart = () => {
   };
 
   const updateCount = (id, operation) => {
-    // setData(prevData =>
-    //   prevData.map(item => {
-    //     if (item.id === id) {
-    //       const updatedCount =
-    //         operation === 'increment'
-    //           ? item.count + 1
-    //           : Math.max(0, item.count - 1);
-    //       return {...item, count: updatedCount};
-    //     }
-    //     return item;
-    //   }),
-    // );
+    dispatch({
+      type: SET_ADD_TO_CART_DETAILS,
+      payload: {
+        id,
+        countChange: operation === 'increment' ? 1 : 'decrement' ? -1 : null,
+      },
+    });
   };
 
   const onDelete = id => {
     dispatch(removeItemCart(id));
+    ToastAndroid.show('Item Deleted', ToastAndroid.SHORT);
   };
 
   const renderItem = ({item, index}) => {
@@ -285,7 +276,7 @@ const Cart = () => {
             <FlatList
               data={setAddToCartDetails}
               renderItem={renderItem}
-              keyExtractor={item => item.id}
+              keyExtractor={(item, index) => `${item.id}-${index}`}
             />
             <View
               style={{

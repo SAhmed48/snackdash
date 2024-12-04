@@ -76,7 +76,7 @@ const Home = () => {
       const data = document.data();
       const info = document.data();
       setDataBase(data);
-      setFireBaseData(info)
+      setFireBaseData(info);
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -88,7 +88,7 @@ const Home = () => {
     console.log(details);
   };
 
-  const getAddToCartDetails = async data => {
+  const getAddToCartDetails = async (data) => {
     dispatch(setAddToCartData(data));
     const foodData = {
       name: data,

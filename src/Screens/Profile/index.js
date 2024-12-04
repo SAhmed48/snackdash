@@ -16,6 +16,7 @@ import {useSelector} from 'react-redux';
 import ProfileData from '../../Data/ProfileData';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
+import { fontScale, horizontalScale, verticalScale } from '../../Utils/ScaleSize';
 
 const UserProfile = () => {
   const [expanded, setExpanded] = React.useState(false);
@@ -24,14 +25,14 @@ const UserProfile = () => {
 
   const renderItem = ({item, index}) => {
     return (
-      <View key={index} style={{marginTop: 18}}>
+      <View key={index} style={{marginTop: verticalScale(18)}}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           {item.icon()}
           <View
             style={{
-              marginLeft: 40,
+              marginLeft: horizontalScale(45),
               position: 'absolute',
-              width: 317,
+              width: horizontalScale(317),
               alignItems: 'center',
               justifyContent: 'space-between',
               flexDirection: 'row',
@@ -40,7 +41,7 @@ const UserProfile = () => {
             <Text
               style={{
                 fontFamily: 'Poppins-Medium',
-                fontSize: 13,
+                fontSize: fontScale(14),
                 color: 'grey',
               }}>
               {item.text}
@@ -88,7 +89,7 @@ const UserProfile = () => {
           <Feather name={'bell'} size={23} color={'grey'} />
         </View>
       </View>
-      <View style={{alignItems: 'center', marginTop: 25}}>
+      <View style={{alignItems: 'center', marginTop: verticalScale(30)}}>
         <View style={styles.itemContainer}>
           <View
             style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
@@ -99,24 +100,24 @@ const UserProfile = () => {
               }}>
               <Image
                 source={require('../../Assets/Images/profilepic.png')}
-                style={{width: 90, height: 90}}
+                style={{width: horizontalScale(90), height: verticalScale(90)}}
               />
-              <View style={{marginLeft: 20}}>
+              <View style={{marginLeft: horizontalScale(20)}}>
                 <View
                   style={{
                     flexDirection: 'row',
-                    width: 240,
+                    width: horizontalScale(240),
                     justifyContent: 'space-between',
                   }}>
                   <View>
                     <Text
-                      style={{fontFamily: 'Poppins-SemiBold', fontSize: 18}}>
+                      style={{fontFamily: 'Poppins-SemiBold', fontSize: fontScale(18)}}>
                       Ayman Atta
                     </Text>
                     <Text
                       style={{
                         fontFamily: 'Poppins-Regular',
-                        fontSize: 14,
+                        fontSize: fontScale(14),
                         color: 'grey',
                       }}>
                       {mapDetails.substring(0, 20)}
@@ -127,9 +128,9 @@ const UserProfile = () => {
                       backgroundColor: '#f4f4f6',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      width: 50,
+                      width: horizontalScale(50),
                       borderRadius: 30,
-                      height: 50,
+                      height: verticalScale(50),
                     }}>
                     <MaterialIcons name={'edit'} size={20} color={'black'} />
                   </View>
@@ -149,8 +150,8 @@ const UserProfile = () => {
               style={{
                 height: 1,
                 backgroundColor: '#f0f0f0',
-                width: 350,
-                marginTop: 10,
+                width: horizontalScale(350),
+                marginTop: verticalScale(10),
               }}
             />
           )}
@@ -161,20 +162,20 @@ const UserProfile = () => {
           style={{
             height: 1,
             backgroundColor: '#f0f0f0',
-            width: 350,
-            marginTop: 10,
+            width: horizontalScale(350),
+            marginTop: verticalScale(10),
           }}
         />
       </View>
-      <View style={{alignItems: 'center', marginTop: 30}}>
-        <View style={{width: 350, flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{alignItems: 'center', marginTop: verticalScale(30)}}>
+        <View style={{width: horizontalScale(350), flexDirection: 'row', alignItems: 'center'}}>
           <MaterialCommunityIcons name={'logout'} size={30} color={'#31af54'} />
           <Text
             style={{
               fontFamily: 'Poppins-Medium',
-              fontSize: 14,
+              fontSize: fontScale(14),
               color: 'black',
-              marginLeft: 12,
+              marginLeft: horizontalScale(12),
             }}>
             Logout
           </Text>
@@ -186,18 +187,18 @@ const UserProfile = () => {
 
 const styles = StyleSheet.create({
   itemContainer: {
-    width: 100,
-    height: 100,
+    width: horizontalScale(100),
+    height: verticalScale(100),
   },
   topView: {
     width: '100%',
-    height: 80,
+    height: verticalScale(80),
     backgroundColor: '#f6f6f6',
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
   deliverView: {
-    marginLeft: 30,
+    marginLeft: horizontalScale(30),
   },
   deliverText: {
     fontFamily: 'Poppins-Regular',
@@ -206,29 +207,29 @@ const styles = StyleSheet.create({
   },
   mapsView: {
     flexDirection: 'row',
-    width: 300,
+    width: horizontalScale(300),
     alignItems: 'center',
-    gap: 10,
+    gap: horizontalScale(10),
   },
   mapsText: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 12,
+    fontSize: fontScale(13),
   },
   toggleText: {
     color: 'black',
-    fontSize: 15,
+    fontSize: fontScale(15),
     transform: [{rotate: '90deg'}],
   },
   bellIconStyle: {
     position: 'absolute',
     alignSelf: 'flex-end',
-    right: 30,
-    width: 40,
+    right: horizontalScale(30),
+    width: horizontalScale(40),
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 30,
     height: 40,
-    marginLeft: 30,
+    marginLeft: horizontalScale(30),
     backgroundColor: 'white',
   },
 });

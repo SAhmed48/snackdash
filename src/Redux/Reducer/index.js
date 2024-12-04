@@ -27,24 +27,36 @@ const Reducer = (state = initialData, action) => {
         ...state,
         mapDetails: action.payload,
       };
-    case SET_ADD_TO_CART_DETAILS:
-      const exists = state.setAddToCartDetails.some(
-        item => item.id === action.payload.id,
-      );
+    case SET_ADD_TO_CART_DETAILS: {
+      const {id, countChange} = action.payload;
+      const exists = state.setAddToCartDetails.some(item => item.id === id);
+
       return exists
         ? {
             ...state,
             setAddToCartDetails: state.setAddToCartDetails.map(item =>
-              item.id === action.payload
-                ? {...item, count: item.count + 1, name: item, price: 20} // Increment count if item exists
-                : null,
+              item.id === id
+                ? {
+                    ...item,
+                    count: Math.max(0, item.count + (countChange || 1)),
+                  }
+                : item,
             ),
           }
         : {
             ...state,
-            setAddToCartDetails: [...state.setAddToCartDetails, action.payload], // Add new item
+            setAddToCartDetails: [
+              ...state.setAddToCartDetails,
+              {
+                id: action.payload,
+                name: action.payload,
+                count: 1, 
+                price: 20,
+                timestamp: Date.now(),
+              },
+            ],
           };
-
+    }
     case REMOVE_ITEM_CART:
       return {
         ...state,

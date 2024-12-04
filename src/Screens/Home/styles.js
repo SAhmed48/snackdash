@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import { verticalScale, horizontalScale } from '../../Utils/ScaleSize';
+import { verticalScale, horizontalScale, fontScale } from '../../Utils/ScaleSize';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   mapsText: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: verticalScale(12),
+    fontSize: fontScale(13),
   },
   toggleText: {
     color: 'black',
