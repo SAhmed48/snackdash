@@ -23,7 +23,6 @@
     "@react-navigation/native-stack": "^6.11.0",
     "@react-navigation/stack": "^6.4.1",
     "@reduxjs/toolkit": "^2.3.0",
-    "@types/react-navigation": "^3.4.0",
     "lottie-react-native": "^7.1.0",
     "react": "18.3.1",
     "react-native": "^0.76.2",
@@ -44,8 +43,7 @@
     "react-native-voice-command": "^1.0.1",
     "react-redux": "^9.1.2",
     "redux-thunk": "^3.1.0",
-    "rn-range-slider": "^2.2.2",
-    "styled-components": "^6.1.13"
+    "rn-range-slider": "^2.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

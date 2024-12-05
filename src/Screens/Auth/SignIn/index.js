@@ -28,7 +28,7 @@ import SocialBtn from '../../../Components/Button/SocialBtn';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {horizontalScale} from '../../../Utils/ScaleSize';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setAuthCredential} from '../../../Redux/Action';
 
 const SignIn = () => {
@@ -63,9 +63,9 @@ const SignIn = () => {
       const userCredential = await auth().createUserWithEmailAndPassword(
         email,
         password,
+        username,
       );
       console.log(userCredential);
-      setLoading(false);
       ToastAndroid.showWithGravity(
         'User Registered Successfully',
         ToastAndroid.SHORT,
@@ -79,6 +79,7 @@ const SignIn = () => {
       dispatch(setAuthCredential(data));
       console.log(data);
       navigation.navigate('Tab');
+      setLoading(false);
     } catch (error) {
       console.log(error);
       Alert.alert('Error', error.message);
@@ -166,9 +167,9 @@ const SignIn = () => {
       console.log(googleCredential);
       console.log(result.user.displayName);
       const data = {
-        name: result.user.displayName
-      }
-      dispatch(setAuthCredential(data))
+        name: result.user.displayName,
+      };
+      dispatch(setAuthCredential(data));
       navigation.navigate('Tab');
       return result;
     } catch (error) {
@@ -183,23 +184,36 @@ const SignIn = () => {
       setLoading(false);
       return;
     }
-    try {
-      auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(user => console.log('User Logged In Successfully', user))
-        .catch(error => console.log(error));
-      setLoading(false);
-      ToastAndroid.showWithGravity(
-        'User Loggedin Successfully',
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
-      navigation.navigate('Tab');
-    } catch (error) {
-      console.log(error);
-      Alert.alert('Error', error.message);
-      setLoading(false);
-    }
+
+    auth()
+      .signInWithEmailAndPassword(email, password, username)
+      .then(async userCredential => {
+        const user = userCredential.user;
+
+        if (!user.displayName) {
+          const displayName = username; // Replace with dynamic logic if needed
+          await user.updateProfile({
+            displayName: displayName,
+          });
+          console.log('Display name set to:', displayName);
+        }
+        ToastAndroid.showWithGravity(
+          'User Logged in Successfully',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+
+        console.log('User Info:', user);
+        dispatch(setAuthCredential());
+        navigation.navigate('Tab');
+      })
+      .catch(error => {
+        console.log(error);
+        Alert.alert('Error', error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const renderInputFields = inputData => {
@@ -322,7 +336,16 @@ const SignIn = () => {
                 </Text>
               </View>
               <View style={styles.loginBtnView}>
-                <LoginBtn onPress={onLogIn} title={'LOGIN'} />
+                <LoginBtn
+                  onPress={onLogIn}
+                  title={
+                    loading ? (
+                      <ActivityIndicator color={'white'} size={25} />
+                    ) : (
+                      'LOGIN'
+                    )
+                  }
+                />
               </View>
             </>
           )}

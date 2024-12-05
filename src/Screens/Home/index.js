@@ -10,6 +10,7 @@ import {
   FlatList,
   Pressable,
   ToastAndroid,
+  Modal,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import Geocoder from 'react-native-geocoding';
@@ -36,8 +37,11 @@ const Home = () => {
   const [expanded, setExpanded] = React.useState(false);
   const [database, setDataBase] = React.useState(null);
   const [visible, setVisible] = React.useState(false);
+  const [addedToCart, setAddedToCart] = React.useState([]);
   const [firebaseData, setFireBaseData] = React.useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [currentCartIndex, setCurrentCartIndex] = useState(0);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -46,12 +50,13 @@ const Home = () => {
 
   React.useEffect(() => {
     getDataBase();
-    const interval = 3000;
-    const autoPlay = setInterval(() => {
+    const interval = setInterval(() => {
       fadeOutAndIn();
-      setCurrentIndex(prevIndex => (prevIndex + 1) % data.length);
-    }, interval);
-    return () => clearInterval(autoPlay);
+      setCurrentIndex(prev => (prev + 1) % data.length);
+    }, 3000);
+    return () => {
+      clearInterval(interval);
+    };
   }, [visible]);
 
   const fadeOutAndIn = () => {
@@ -72,14 +77,14 @@ const Home = () => {
   const getDataBase = async () => {
     try {
       const docId = visible ? 'b831VbyXKQ9XY1WvTKOA' : 'GNSIDLG6nUvU93WVqOrS';
+      console.log('Fetching Document ID:', docId);
       const document = await firestore().collection('Food').doc(docId).get();
       const data = document.data();
-      const info = document.data();
       setDataBase(data);
-      setFireBaseData(info);
-      console.log(data);
+      setFireBaseData(data);
+      console.log('Fetched Data:', data);
     } catch (error) {
-      console.log(error);
+      console.log('Error fetching data:', error);
     }
   };
 
@@ -88,17 +93,38 @@ const Home = () => {
     console.log(details);
   };
 
-  const getAddToCartDetails = async (data) => {
-    dispatch(setAddToCartData(data));
-    const foodData = {
-      name: data,
-      price: 20,
+  const handleBellPress = () => {
+    if (addedToCart.length > 0) {
+      setShowModal(true);
+    } else {
+      ToastAndroid.show('Cart is empty!', ToastAndroid.SHORT);
     }
-    await firestore().collection('SelectedFood').doc('vhrtZyT6VdlotscaYY4y').set({
-      items: firestore.FieldValue.arrayUnion(foodData)
-    }, {merge: true});
+  };
+
+  const closeModal = () => {
+    if (currentCartIndex < addedToCart.length - 1) {
+      setCurrentCartIndex(prev => prev + 1);
+    } else {
+      setShowModal(false);
+      setCurrentCartIndex(0);
+      setAddedToCart([]);
+    }
+  };
+
+  const getAddToCartDetails = async (data, index) => {
+    console.log('Adding to cart:', data, index);
+    const foodData = {name: data, price: 20};
+    dispatch(setAddToCartData(data));
+    await firestore()
+      .collection('SelectedFood')
+      .doc('vhrtZyT6VdlotscaYY4y')
+      .set(
+        {
+          items: firestore.FieldValue.arrayUnion(foodData),
+        },
+        {merge: true},
+      );
     ToastAndroid.show('Item Added to Cart', ToastAndroid.SHORT);
-    console.log(foodData, data);
   };
 
   const renderData = ({item, index}) => {
@@ -127,6 +153,7 @@ const Home = () => {
   };
 
   const renderItem = ({item, index}) => {
+    const isAdded = addedToCart.includes(index);
     return (
       <View style={styles.topRatedFoodView}>
         <View style={styles.topRatedFoodItems} key={index}>
@@ -138,9 +165,15 @@ const Home = () => {
           </View>
           <View style={styles.priceBtnSelectView}>
             <TouchableOpacity
-              style={styles.priceBtnSelectStyle}
-              onPress={() => getAddToCartDetails(item)}>
-              <Text style={styles.priceBtnSelectText}>20 PKR</Text>
+              style={[
+                styles.priceBtnSelectStyle,
+                isAdded && {backgroundColor: 'gray'},
+              ]}
+              onPress={() => getAddToCartDetails(item, index)}
+              disabled={isAdded}>
+              <Text style={styles.priceBtnSelectText}>
+                {isAdded ? 'Added' : '20 PKR'}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -166,9 +199,14 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.bellIconStyle}>
+        <TouchableOpacity
+          style={styles.bellIconStyle}
+          onPress={handleBellPress}>
           <Feather name={'bell'} size={23} color={'grey'} />
-        </View>
+          {addedToCart.length > 0 ? (
+            <View style={styles.notificationDot} />
+          ) : null}
+        </TouchableOpacity>
       </View>
       <View style={styles.inputFilterView}>
         <View style={styles.inputFilterInsideView}>
@@ -285,13 +323,29 @@ const Home = () => {
               <Text style={styles.seeAllText}>See All</Text>
             </View>
           </View>
+          <Modal visible={showModal} transparent animationType="fade">
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalText}>
+                  {`Item: ${
+                    firebaseData?.Food[addedToCart[currentCartIndex]] || ''
+                  }`}
+                </Text>
+                <TouchableOpacity
+                  onPress={closeModal}
+                  style={styles.closeButton}>
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
           <View>
             <View style={styles.foodItemsView}>
-              {database && (
+              {firebaseData && (
                 <FlatList
                   data={firebaseData.Food}
                   renderItem={renderItem}
-                  keyExtractor={index => index.toString()}
+                  keyExtractor={(_, index) => index.toString()}
                   numColumns={3}
                 />
               )}

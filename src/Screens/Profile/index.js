@@ -16,7 +16,7 @@ import {useSelector} from 'react-redux';
 import ProfileData from '../../Data/ProfileData';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
-import { fontScale, horizontalScale, verticalScale } from '../../Utils/ScaleSize';
+import {fontScale, horizontalScale, verticalScale} from '../../Utils/ScaleSize';
 
 const UserProfile = () => {
   const [expanded, setExpanded] = React.useState(false);
@@ -26,44 +26,55 @@ const UserProfile = () => {
   const renderItem = ({item, index}) => {
     return (
       <View key={index} style={{marginTop: verticalScale(18)}}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          {item.icon()}
-          <View
-            style={{
-              marginLeft: horizontalScale(45),
-              position: 'absolute',
-              width: horizontalScale(317),
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-            }}>
-            <Text
+        <Pressable
+          onPress={() =>
+            item.id === 4
+              ? navigation.navigate('Settings')
+              : item.id === 5
+              ? navigation.navigate('language')
+              : item.id === 3
+              ? navigation.navigate('Coordinates')
+              : null
+          }>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            {item.icon()}
+            <View
               style={{
-                fontFamily: 'Poppins-Medium',
-                fontSize: fontScale(14),
-                color: 'grey',
+                marginLeft: horizontalScale(45),
+                position: 'absolute',
+                width: horizontalScale(317),
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
               }}>
-              {item.text}
-            </Text>
-            <Pressable
-              onPress={() =>
-                item.id === 4
-                  ? navigation.navigate('Settings')
-                  : item.id === 5
-                  ? navigation.navigate('language')
-                  : item.id === 3
-                  ? navigation.navigate('Coordinates')
-                  : null
-              }>
-              <MaterialIcons
-                name={'keyboard-arrow-right'}
-                size={30}
-                color={'grey'}
-              />
-            </Pressable>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Medium',
+                  fontSize: fontScale(14),
+                  color: 'grey',
+                }}>
+                {item.text}
+              </Text>
+              <Pressable
+                onPress={() =>
+                  item.id === 4
+                    ? navigation.navigate('Settings')
+                    : item.id === 5
+                    ? navigation.navigate('language')
+                    : item.id === 3
+                    ? navigation.navigate('Coordinates')
+                    : null
+                }>
+                <MaterialIcons
+                  name={'keyboard-arrow-right'}
+                  size={30}
+                  color={'grey'}
+                />
+              </Pressable>
+            </View>
           </View>
-        </View>
+        </Pressable>
       </View>
     );
   };
@@ -111,7 +122,10 @@ const UserProfile = () => {
                   }}>
                   <View>
                     <Text
-                      style={{fontFamily: 'Poppins-SemiBold', fontSize: fontScale(18)}}>
+                      style={{
+                        fontFamily: 'Poppins-SemiBold',
+                        fontSize: fontScale(18),
+                      }}>
                       Ayman Atta
                     </Text>
                     <Text
@@ -168,7 +182,12 @@ const UserProfile = () => {
         />
       </View>
       <View style={{alignItems: 'center', marginTop: verticalScale(30)}}>
-        <View style={{width: horizontalScale(350), flexDirection: 'row', alignItems: 'center'}}>
+        <View
+          style={{
+            width: horizontalScale(350),
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
           <MaterialCommunityIcons name={'logout'} size={30} color={'#31af54'} />
           <Text
             style={{

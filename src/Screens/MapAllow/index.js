@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   PermissionsAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import React from 'react';
 import Geolocation from '@react-native-community/geolocation';
@@ -20,10 +21,12 @@ import {setMapData} from '../../Redux/Action';
 
 const MapAllow = () => {
   const [location, setLocation] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const onLocationTurnOn = async () => {
+    setLoading(true);
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -39,12 +42,17 @@ const MapAllow = () => {
         Geolocation.getCurrentPosition(
           position => {
             const {latitude, longitude} = position.coords;
-            Geocoder.from(latitude, longitude).then(json => {
-              const formatted_Address = json.results[0].formatted_address;
-              setLocation(formatted_Address);
-              dispatch(setMapData(formatted_Address));
-              console.log(formatted_Address);
-            });
+            Geocoder.from(latitude, longitude)
+              .then(json => {
+                const formatted_Address = json.results[0].formatted_address;
+                setLocation(formatted_Address);
+                dispatch(setMapData(formatted_Address)); // Update Redux state
+                console.log(formatted_Address);
+                navigation.navigate('Login', {location: formatted_Address});
+              })
+              .catch(err => {
+                console.log('Geocoding error:', err);
+              });
             console.log('User position:', position);
           },
           error => {
@@ -52,10 +60,10 @@ const MapAllow = () => {
           },
           {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
         );
-        navigation.navigate('Login');
       } else {
         console.log('Location Permission Denied');
       }
+      setLoading(false);
     } catch (error) {
       console.log('Permission error:', error);
     }
@@ -74,7 +82,7 @@ const MapAllow = () => {
         </View>
       ))}
       <View style={styles.btnPosition}>
-        <Button Name="Yes, turn it on" onPress={onLocationTurnOn} />
+        <Button Name={loading ? <ActivityIndicator color={'white'} size={25}/> : 'Yes, turn it on'} onPress={onLocationTurnOn} />
         <TouchableOpacity>
           <Text style={{fontFamily: 'Poppins-Medium'}}>Cancel</Text>
         </TouchableOpacity>

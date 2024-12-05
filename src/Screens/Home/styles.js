@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import { verticalScale, horizontalScale, fontScale } from '../../Utils/ScaleSize';
+import {verticalScale, horizontalScale, fontScale} from '../../Utils/ScaleSize';
 
 const styles = StyleSheet.create({
   container: {
@@ -303,6 +303,39 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
     fontSize: verticalScale(13),
     bottom: verticalScale(5),
+  },
+  notificationDot: {
+    position: 'absolute',
+    overflow: 'visible',
+    top: 5,
+    right: 8,
+    backgroundColor: 'green',
+    width: 15,
+    height: 15,
+    borderRadius: 40,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  closeButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: 'green',
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   priceBtnSelectView: {
     alignItems: 'center',

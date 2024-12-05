@@ -13,6 +13,7 @@ const initialData = {
   setAddToCartDetails: [],
   itemTotal: null,
   authData: null,
+  userData: null
 };
 
 const Reducer = (state = initialData, action) => {
