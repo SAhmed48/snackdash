@@ -12,7 +12,7 @@ import {
 import React from 'react';
 import Images from '../../../Constants/Images';
 import {useNavigation} from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
+import auth, {firebase} from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 import {
@@ -28,11 +28,12 @@ import SocialBtn from '../../../Components/Button/SocialBtn';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {horizontalScale} from '../../../Utils/ScaleSize';
-import {useDispatch, useSelector} from 'react-redux';
-import {setAuthCredential} from '../../../Redux/Action';
+import {useDispatch} from 'react-redux';
+import {setAuthCredential, setToken} from '../../../Redux/Action';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignIn = () => {
-  const [username, setUserName] = React.useState('');
+  const [displayName, setDisplayName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [selected, setSelected] = React.useState(1);
@@ -52,43 +53,8 @@ const SignIn = () => {
   const handleFocus = field => setFocusedField(field);
   const handleBlur = () => setFocusedField(null);
 
-  const onSignIn = async () => {
-    setLoading(true);
-    if (username === '' || email === '' || password === '') {
-      Alert.alert('Please Enter all Fields');
-      setLoading(false);
-      return;
-    }
-    try {
-      const userCredential = await auth().createUserWithEmailAndPassword(
-        email,
-        password,
-        username,
-      );
-      console.log(userCredential);
-      ToastAndroid.showWithGravity(
-        'User Registered Successfully',
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
-      const data = {
-        name: username,
-        emailSend: email,
-        code: password,
-      };
-      dispatch(setAuthCredential(data));
-      console.log(data);
-      navigation.navigate('Tab');
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      Alert.alert('Error', error.message);
-      setLoading(false);
-    }
-  };
-
   const handleInputChange = field => text => {
-    if (field === 'Username') setUserName(text);
+    if (field === 'Username') setDisplayName(text);
     else if (field === 'Email Address') setEmail(text);
     else if (field === 'Password') setPassword(text);
   };
@@ -177,43 +143,58 @@ const SignIn = () => {
     }
   };
 
-  const onLogIn = () => {
+  const onSignIn = async () => {
     setLoading(true);
-    if (email === '' || password === '') {
-      Alert.alert('Please Enter all Fields');
+    if (!displayName || !email || !password) {
+      Alert.alert('Error', 'Please enter all fields');
       setLoading(false);
       return;
     }
+    try {
+      const userCredential = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
+      const user = userCredential.user;
+      await user.updateProfile({displayName});
+      const token = await user.getIdToken();
+      await AsyncStorage.setItem('userToken', token);
+      const data = {name: displayName, emailSend: email};
+      dispatch(setAuthCredential(data));
+      dispatch(setToken(token));
+      ToastAndroid.show('User Registered Successfully', ToastAndroid.SHORT);
+      navigation.navigate('Tab');
+    } catch (error) {
+      console.error('Error during sign up:', error.message);
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    auth()
-      .signInWithEmailAndPassword(email, password, username)
-      .then(async userCredential => {
-        const user = userCredential.user;
-
-        if (!user.displayName) {
-          const displayName = username; // Replace with dynamic logic if needed
-          await user.updateProfile({
-            displayName: displayName,
-          });
-          console.log('Display name set to:', displayName);
-        }
-        ToastAndroid.showWithGravity(
-          'User Logged in Successfully',
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        );
-
-        console.log('User Info:', user);
-        dispatch(setAuthCredential());
-        navigation.navigate('Tab');
-      })
-      .catch(error => {
-        console.log(error);
-        Alert.alert('Error', error.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+  const onLogIn = async () => {
+    setLoading(true);
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter all fields');
+      setLoading(false);
+      return;
+    }
+    try {
+      const userCredential = await auth().signInWithEmailAndPassword(
+        email,
+        password,
+      );
+      const token = await userCredential.user.getIdToken();
+      await AsyncStorage.setItem('userToken', token);
+      dispatch(setToken(token));
+      ToastAndroid.show('Logged in Successfully', ToastAndroid.SHORT);
+      navigation.navigate('Tab');
+    } catch (error) {
+      console.error('Error during login:', error.message);
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderInputFields = inputData => {
@@ -241,7 +222,7 @@ const SignIn = () => {
               feild === 'Email Address'
                 ? email
                 : feild === 'Username'
-                ? username
+                ? displayName
                 : password
             }
             onSubmitEditing={() => nextRef?.current?.focus()}

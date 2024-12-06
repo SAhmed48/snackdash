@@ -71,7 +71,7 @@ const Settings = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.inputView}>
-        <Text style={styles.profileNameStyle}>Hi {authData.name}!</Text>
+        <Text style={styles.profileNameStyle}>Hi {authData ? authData.name : 'User'}</Text>
       </View>
       {renderItemFeilds(profileSettingsInput)}
       <View style={{alignItems: 'center', marginTop: verticalScale(40)}}>

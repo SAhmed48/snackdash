@@ -5,6 +5,8 @@ import {
   SET_FAVORITE_DETAILS,
   SET_ITEM_TOTAL,
   SET_MAP_DETAILS,
+  SET_TOKEN,
+  SET_HISTORY_DATA
 } from '../../Constants/SetData';
 
 const setData = details => {
@@ -49,6 +51,20 @@ const setAuthCredential = authData => {
   };
 };
 
+const setToken = token => {
+  return {
+    type: SET_TOKEN,
+    payload: token
+  }
+}
+
+const setHistoryData = data => {
+  return {
+    type: SET_HISTORY_DATA,
+    payload: data
+  }
+}
+
 export {
   setData,
   setMapData,
@@ -56,4 +72,6 @@ export {
   removeItemCart,
   setItemTotal,
   setAuthCredential,
+  setToken,
+  setHistoryData
 };

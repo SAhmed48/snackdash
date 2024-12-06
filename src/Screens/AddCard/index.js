@@ -17,6 +17,8 @@ import Images from '../../Constants/Images';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {useNavigation} from '@react-navigation/native';
 import styles from './styles';
+import { useSelector, useDispatch } from 'react-redux';
+import { setHistoryData } from '../../Redux/Action';
 
 const payment = [
   {
@@ -40,6 +42,12 @@ const Card = () => {
   const handleFocus = feild => () => setFocusedField(feild);
   const handleBlur = () => setFocusedField(null);
   const navigation = useNavigation();
+  const setAddToCartDetails = useSelector(state => state.Reducer.setAddToCartDetails)
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    console.log(setAddToCartDetails)
+  }, [setAddToCartDetails])
 
   const handleInputFeild = feild => text => {
     if (feild === 'Card Holder') setCardName(text);
@@ -199,7 +207,11 @@ const Card = () => {
         <View style={[styles.inputView, {marginTop: 30}]}>
           <TouchableOpacity
             style={styles.confirmBtnStyle}
-            onPress={() => navigation.navigate('OrderSuccess')}>
+            onPress={async () => {
+              dispatch(setHistoryData(setAddToCartDetails))
+              console.log('dispatched', setAddToCartDetails)
+              navigation.navigate('OrderSuccess');
+            }}>
             <Text style={styles.confirmBtnTextStyle}>Confirm</Text>
           </TouchableOpacity>
         </View>

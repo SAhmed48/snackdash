@@ -15,6 +15,7 @@ import {styles} from './styles';
 import LinearGradient from 'react-native-linear-gradient';
 import slides from '../../Data/OnBoardingData';
 import Button from '../../Components/Button/OnBoardingButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const {width, height} = Dimensions.get('window');
 
@@ -43,6 +44,15 @@ const OnboardingScreen = () => {
       useNativeDriver: false,
     }).start();
   }, [currentSlideIndex]);
+
+  const finishOnboarding = async () => {
+    try {
+      await AsyncStorage.setItem('hasSeenOnboarding', 'true');
+      navigation.navigate('MapAllow');
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  }
 
   const updateCurrentSlideIndex = e => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
@@ -103,7 +113,7 @@ const OnboardingScreen = () => {
         <View style={{alignItems: 'flex-end', marginBottom: 70}}>
           {currentSlideIndex === slides.length - 1 ? (
             <View>
-             <Button Name='Get Started' onPress={() => navigation.navigate('MapAllow')}/>
+             <Button Name='Get Started' onPress={finishOnboarding}/>
             </View>
           ) : (
             <View style={{flexDirection: 'row'}}>

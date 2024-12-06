@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   Pressable,
+  ToastAndroid,
 } from 'react-native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,6 +18,8 @@ import ProfileData from '../../Data/ProfileData';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import {fontScale, horizontalScale, verticalScale} from '../../Utils/ScaleSize';
+import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserProfile = () => {
   const [expanded, setExpanded] = React.useState(false);
@@ -190,6 +193,19 @@ const UserProfile = () => {
           }}>
           <MaterialCommunityIcons name={'logout'} size={30} color={'#31af54'} />
           <Text
+            onPress={async () => {
+              try {
+                await auth().signOut();
+                await AsyncStorage.removeItem('userToken');
+                navigation.reset({
+                  index: 0,
+                  routes: [{name: 'Login'}],
+                });
+                ToastAndroid.show('Logout Successfully', ToastAndroid.SHORT);
+              } catch (error) {
+                console.log('Error:', error);
+              }
+            }}
             style={{
               fontFamily: 'Poppins-Medium',
               fontSize: fontScale(14),

@@ -7,15 +7,16 @@ import SignIn from '../../Screens/Auth/SignIn';
 import Forgot from '../../Screens/Auth/ForgotPassword';
 import TabNavigator from '../BottomNavigator';
 import Filter from '../../Screens/Filter';
-import {useNavigation} from '@react-navigation/native';
 import {Pressable, View, Image, StyleSheet} from 'react-native';
 import SuccessOrder from '../../Screens/SuccessOrder';
+import { useNavigation } from '@react-navigation/native';
+
 
 const Navigation = () => {
-  const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator(); 
   const navigation = useNavigation();
   return (
-    <Stack.Navigator initialRouteName='Tab'>
+    <Stack.Navigator initialRouteName={'Splash'}>
       <Stack.Screen
         name="Splash"
         component={Splash}
@@ -44,9 +45,7 @@ const Navigation = () => {
       <Stack.Screen
         name="Tab"
         component={TabNavigator}
-        options={({route}) => ({
-          headerShown: false,
-        })}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Filter"

@@ -60,12 +60,14 @@ const MapAllow = () => {
           },
           {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
         );
+        setLoading(false)
       } else {
         console.log('Location Permission Denied');
+        setLoading(false)
       }
-      setLoading(false);
     } catch (error) {
       console.log('Permission error:', error);
+      setLoading(false)
     }
   };
 

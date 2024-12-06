@@ -11,6 +11,8 @@ import {
   Pressable,
   ToastAndroid,
   Modal,
+  DeviceEventEmitter,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import Geocoder from 'react-native-geocoding';
@@ -28,17 +30,18 @@ import {ImageData, data} from '../../Data/FoodCategory';
 initializeApp({
   apiKey: 'AIzaSyA6JrpMneO5H2iWxO8KQCtCHXvwOWz7mOI',
   projectId: 'sahlah-edb6f',
-  messagingSenderId: '1043161679400	',
+  messagingSenderId: '1043161679400',
   appId: '1:1043161679400:android:6dc15daf753902fba0171d',
 });
 
 Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
+
 const Home = () => {
-  const [expanded, setExpanded] = React.useState(false);
-  const [database, setDataBase] = React.useState(null);
-  const [visible, setVisible] = React.useState(false);
-  const [addedToCart, setAddedToCart] = React.useState([]);
-  const [firebaseData, setFireBaseData] = React.useState(null);
+  const [expanded, setExpanded] = useState(false);
+  const [database, setDataBase] = useState(null);
+  const [visible, setVisible] = useState(false);
+  const [addedToCart, setAddedToCart] = useState([]);
+  const [firebaseData, setFireBaseData] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [currentCartIndex, setCurrentCartIndex] = useState(0);
@@ -50,14 +53,20 @@ const Home = () => {
 
   React.useEffect(() => {
     getDataBase();
-    const interval = setInterval(() => {
+    const cartListener = DeviceEventEmitter.addListener('cart', index => {
+      setAddedToCart(prevState => [...prevState, index]);
+    });
+    const interval = 3000;
+    const autoPlay = setInterval(() => {
       fadeOutAndIn();
-      setCurrentIndex(prev => (prev + 1) % data.length);
-    }, 3000);
+      setCurrentIndex(prevState => (prevState + 1) % data.length);
+    }, interval);
+
     return () => {
-      clearInterval(interval);
+      clearInterval(autoPlay);
+      cartListener.remove();
     };
-  }, [visible]);
+  }, [visible, firebaseData, currentIndex]);
 
   const fadeOutAndIn = () => {
     Animated.sequence([
@@ -77,20 +86,24 @@ const Home = () => {
   const getDataBase = async () => {
     try {
       const docId = visible ? 'b831VbyXKQ9XY1WvTKOA' : 'GNSIDLG6nUvU93WVqOrS';
-      console.log('Fetching Document ID:', docId);
       const document = await firestore().collection('Food').doc(docId).get();
-      const data = document.data();
-      setDataBase(data);
-      setFireBaseData(data);
-      console.log('Fetched Data:', data);
+      if (document.exists) {
+        setDataBase(document.data());
+        setFireBaseData(document.data());
+      } else {
+        console.warn(`Document with ID ${docId} does not exist.`);
+        setDataBase(null);
+        setFireBaseData(null);
+      }
     } catch (error) {
-      console.log('Error fetching data:', error);
+      console.error('Error fetching database:', error);
+      setDataBase(null);
+      setFireBaseData(null);
     }
   };
 
   const getDetails = details => {
     dispatch(setData(details));
-    console.log(details);
   };
 
   const handleBellPress = () => {
@@ -112,7 +125,6 @@ const Home = () => {
   };
 
   const getAddToCartDetails = async (data, index) => {
-    console.log('Adding to cart:', data, index);
     const foodData = {name: data, price: 20};
     dispatch(setAddToCartData(data));
     await firestore()
@@ -124,7 +136,9 @@ const Home = () => {
         },
         {merge: true},
       );
+
     ToastAndroid.show('Item Added to Cart', ToastAndroid.SHORT);
+    DeviceEventEmitter.emit('cart', index);
   };
 
   const renderData = ({item, index}) => {
@@ -210,7 +224,7 @@ const Home = () => {
       </View>
       <View style={styles.inputFilterView}>
         <View style={styles.inputFilterInsideView}>
-          <TextInput placeholder="Seach food" style={styles.inputTextStyle} />
+          <TextInput placeholder="Search food" style={styles.inputTextStyle} />
           <View style={{position: 'absolute', top: '20%', left: 20}}>
             <Feather name={'search'} size={25} color={'#31af54'} />
           </View>
@@ -228,21 +242,19 @@ const Home = () => {
         <View style={styles.foodCategoryDirectionView}>
           {ImageData.map(item => {
             return (
-              <>
-                <TouchableOpacity
-                  key={item.id}
-                  style={styles.foodCateogoryView}
-                  onPress={() => {
-                    item.id ? setVisible(true) : null;
-                    console.log(item.id);
-                  }}>
-                  <Image
-                    source={item.image}
-                    style={styles.foodCategoryImageStyle}
-                  />
-                  <Text style={styles.foodCategoryText}>{item.text}</Text>
-                </TouchableOpacity>
-              </>
+              <TouchableOpacity
+                key={item.id}
+                style={styles.foodCateogoryView}
+                onPress={() => {
+                  item.id ? setVisible(true) : null;
+                  console.log(item.id);
+                }}>
+                <Image
+                  source={item.image}
+                  style={styles.foodCategoryImageStyle}
+                />
+                <Text style={styles.foodCategoryText}>{item.text}</Text>
+              </TouchableOpacity>
             );
           })}
         </View>
@@ -327,9 +339,10 @@ const Home = () => {
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
                 <Text style={styles.modalText}>
-                  {`Item: ${
-                    firebaseData?.Food[addedToCart[currentCartIndex]] || ''
-                  }`}
+                  item :{' '}
+                  {firebaseData?.Food && addedToCart.length > 0
+                    ? firebaseData.Food[addedToCart[currentCartIndex]]
+                    : 'No item'}
                 </Text>
                 <TouchableOpacity
                   onPress={closeModal}
@@ -341,13 +354,17 @@ const Home = () => {
           </Modal>
           <View>
             <View style={styles.foodItemsView}>
-              {firebaseData && (
+              {firebaseData?.Food ? (
                 <FlatList
                   data={firebaseData.Food}
                   renderItem={renderItem}
                   keyExtractor={(_, index) => index.toString()}
                   numColumns={3}
                 />
+              ) : (
+                <View style={{marginTop: 60}}>
+                  <ActivityIndicator color={'green'} size={40} />
+                </View>
               )}
             </View>
           </View>

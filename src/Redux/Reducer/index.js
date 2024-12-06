@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   SET_ADD_TO_CART_DETAILS,
   SET_FAVORITE_DETAILS,
@@ -5,6 +6,8 @@ import {
   SET_MAP_DETAILS,
   REMOVE_ITEM_CART,
   SET_AUTH_CREDENTIAL,
+  SET_TOKEN,
+  SET_HISTORY_DATA,
 } from '../../Constants/SetData';
 
 const initialData = {
@@ -13,7 +16,9 @@ const initialData = {
   setAddToCartDetails: [],
   itemTotal: null,
   authData: null,
-  userData: null
+  userData: null,
+  userToken: '',
+  historyData: [],
 };
 
 const Reducer = (state = initialData, action) => {
@@ -51,7 +56,7 @@ const Reducer = (state = initialData, action) => {
               {
                 id: action.payload,
                 name: action.payload,
-                count: 1, 
+                count: 1,
                 price: 20,
                 timestamp: Date.now(),
               },
@@ -75,6 +80,19 @@ const Reducer = (state = initialData, action) => {
         ...state,
         authData: action.payload,
       };
+    case SET_TOKEN:
+      AsyncStorage.setItem('userToken', action.payload).then(token =>
+        console.log(token),
+      ).catch(err => console.log(err));
+      return {
+        ...state,
+        userToken: action.payload,
+      };
+      case SET_HISTORY_DATA: 
+      return {
+        ...state, 
+        historyData: [...state.historyData, action.payload]
+      }
     default:
       return state;
   }

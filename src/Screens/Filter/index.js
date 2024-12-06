@@ -12,6 +12,7 @@ import React, {useState, useRef, useCallback} from 'react';
 import Slider from 'rn-range-slider';
 import {fontScale, horizontalScale, verticalScale} from '../../Utils/ScaleSize';
 import {CategoryData, foodData, locationData} from '../../Data/BtnData';
+import { useNavigation } from '@react-navigation/native';
 
 const RenderThumb = () => <View style={styles.thumb} />;
 const RenderRail = () => <View style={styles.rail} />;

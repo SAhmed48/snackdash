@@ -18,6 +18,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {horizontalScale, verticalScale} from '../../Utils/ScaleSize';
 import {removeItemCart, setItemTotal} from '../../Redux/Action';
 import {SET_ADD_TO_CART_DETAILS} from '../../Constants/SetData';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Cart = () => {
   const [currentTime, setCurrentTime] = React.useState(Date.now());
@@ -32,6 +33,12 @@ const Cart = () => {
 
   React.useEffect(() => {
     arrayItems();
+    const getItems = async () => {
+      await AsyncStorage.getItem('cart').then(value => {
+        console.log(value)
+      })
+    }
+    getItems();
   }, [setAddToCartDetails]);
 
   const arrayItems = () => {
