@@ -6,7 +6,8 @@ import {
   SET_ITEM_TOTAL,
   SET_MAP_DETAILS,
   SET_TOKEN,
-  SET_HISTORY_DATA
+  SET_HISTORY_DATA,
+  SET_CART
 } from '../../Constants/SetData';
 
 const setData = details => {
@@ -73,5 +74,5 @@ export {
   setItemTotal,
   setAuthCredential,
   setToken,
-  setHistoryData
+  setHistoryData,
 };

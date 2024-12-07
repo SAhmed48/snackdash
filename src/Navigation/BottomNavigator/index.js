@@ -5,7 +5,15 @@ import Favorits from '../../Screens/Favourites';
 import Track from '../../Screens/Track';
 import UserProfile from '../../Screens/Profile';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+  DeviceEventEmitter,
+} from 'react-native';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,6 +29,7 @@ import Language from '../../Screens/Language';
 import MyLocation from '../../Screens/MyLocation';
 import {verticalScale} from '../../Utils/ScaleSize';
 import {useSelector} from 'react-redux';
+import Header from '../../Components/Header';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -28,12 +37,19 @@ const TabNavigator = () => {
   const setAddToCartDetails = useSelector(
     state => state.Reducer.setAddToCartDetails,
   );
+  const getHeader = routeName => {
+    if (['Home', 'Profile', 'Cart'].includes(routeName)) {
+      return () => <Header />;
+    }
+    return null;
+  };
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarHideOnKeyboard: true,
         tabBarActiveBackgroundColor: 'white',
         headerShown: true,
+        header: getHeader(route.name),
         tabBarStyle: {
           height: verticalScale(70),
           display:
@@ -69,7 +85,7 @@ const TabNavigator = () => {
               />
             </View>
           ),
-          headerShown: false,
+          headerShown: true,
         }}
       />
       <Tab.Screen
@@ -118,7 +134,7 @@ const TabNavigator = () => {
         name="Cart"
         component={AddCart}
         options={{
-          headerShown: false,
+          headerShown: true,
           tabBarLabel: '',
           tabBarIcon: ({focused}) => (
             <View
@@ -222,7 +238,7 @@ const TabNavigator = () => {
         name="Profile"
         component={UserProfile}
         options={{
-          headerShown: false,
+          headerShown: true,
           tabBarIcon: ({focused}) => (
             <MaterialCommunityIcons
               name="account"

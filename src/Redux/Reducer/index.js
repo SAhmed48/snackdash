@@ -8,6 +8,8 @@ import {
   SET_AUTH_CREDENTIAL,
   SET_TOKEN,
   SET_HISTORY_DATA,
+  SET_CART,
+  MARK_VIEWED_ITEM,
 } from '../../Constants/SetData';
 
 const initialData = {
@@ -19,6 +21,8 @@ const initialData = {
   userData: null,
   userToken: '',
   historyData: [],
+  currentCartIndex: 0, // Tracks which item is being viewed
+  cartViewed: false, 
 };
 
 const Reducer = (state = initialData, action) => {
@@ -36,7 +40,6 @@ const Reducer = (state = initialData, action) => {
     case SET_ADD_TO_CART_DETAILS: {
       const {id, countChange} = action.payload;
       const exists = state.setAddToCartDetails.some(item => item.id === id);
-
       return exists
         ? {
             ...state,
@@ -92,6 +95,12 @@ const Reducer = (state = initialData, action) => {
       return {
         ...state, 
         historyData: [...state.historyData, action.payload]
+      }
+      case MARK_VIEWED_ITEM:
+      return {
+        ...state,
+        cartViewed: true,
+        currentCartIndex: 0,
       }
     default:
       return state;

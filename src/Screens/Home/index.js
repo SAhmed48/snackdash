@@ -10,7 +10,6 @@ import {
   FlatList,
   Pressable,
   ToastAndroid,
-  Modal,
   DeviceEventEmitter,
   ActivityIndicator,
 } from 'react-native';
@@ -37,34 +36,25 @@ initializeApp({
 Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
 
 const Home = () => {
-  const [expanded, setExpanded] = useState(false);
   const [database, setDataBase] = useState(null);
   const [visible, setVisible] = useState(false);
-  const [addedToCart, setAddedToCart] = useState([]);
   const [firebaseData, setFireBaseData] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-  const [currentCartIndex, setCurrentCartIndex] = useState(0);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-
-  const mapDetails = useSelector(state => state.Reducer.mapDetails);
   const fadeAnim = useRef(new Animated.Value(1)).current;
-
+  const setAddToCartDetails = useSelector(
+    state => state.Reducer.setAddToCartDetails,
+  );
   React.useEffect(() => {
     getDataBase();
-    const cartListener = DeviceEventEmitter.addListener('cart', index => {
-      setAddedToCart(prevState => [...prevState, index]);
-    });
-    const interval = 3000;
+    const interval = 20000;
     const autoPlay = setInterval(() => {
       fadeOutAndIn();
       setCurrentIndex(prevState => (prevState + 1) % data.length);
     }, interval);
-
     return () => {
       clearInterval(autoPlay);
-      cartListener.remove();
     };
   }, [visible, firebaseData, currentIndex]);
 
@@ -104,24 +94,6 @@ const Home = () => {
 
   const getDetails = details => {
     dispatch(setData(details));
-  };
-
-  const handleBellPress = () => {
-    if (addedToCart.length > 0) {
-      setShowModal(true);
-    } else {
-      ToastAndroid.show('Cart is empty!', ToastAndroid.SHORT);
-    }
-  };
-
-  const closeModal = () => {
-    if (currentCartIndex < addedToCart.length - 1) {
-      setCurrentCartIndex(prev => prev + 1);
-    } else {
-      setShowModal(false);
-      setCurrentCartIndex(0);
-      setAddedToCart([]);
-    }
   };
 
   const getAddToCartDetails = async (data, index) => {
@@ -167,10 +139,10 @@ const Home = () => {
   };
 
   const renderItem = ({item, index}) => {
-    const isAdded = addedToCart.includes(index);
+    const isAdded = setAddToCartDetails.length > 0 && setAddToCartDetails.includes(item);
     return (
       <View style={styles.topRatedFoodView}>
-        <View style={styles.topRatedFoodItems} key={index}>
+        <View style={styles.topRatedFoodItems} keys={index}>
           <View style={styles.topRatedFoodContainerInside}>
             <Image source={Images.zinger} style={styles.topRatedImageStyle} />
           </View>
@@ -198,30 +170,6 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#f6f6f6'} barStyle={'dark-content'} />
-      <View style={styles.topView}>
-        <View style={styles.deliverView}>
-          <Text style={styles.deliverText}>Deliver to</Text>
-          <View style={styles.mapsView}>
-            <Image source={require('../../Assets/Images/location.png')} />
-            {mapDetails && (
-              <Text style={styles.mapsText}>
-                {expanded ? mapDetails : `${mapDetails.substring(0, 20)}`}
-              </Text>
-            )}
-            <TouchableOpacity onPress={() => setExpanded(!expanded)}>
-              <Text style={styles.toggleText}>{expanded ? '<' : '>'}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <TouchableOpacity
-          style={styles.bellIconStyle}
-          onPress={handleBellPress}>
-          <Feather name={'bell'} size={23} color={'grey'} />
-          {addedToCart.length > 0 ? (
-            <View style={styles.notificationDot} />
-          ) : null}
-        </TouchableOpacity>
-      </View>
       <View style={styles.inputFilterView}>
         <View style={styles.inputFilterInsideView}>
           <TextInput placeholder="Search food" style={styles.inputTextStyle} />
@@ -335,23 +283,6 @@ const Home = () => {
               <Text style={styles.seeAllText}>See All</Text>
             </View>
           </View>
-          <Modal visible={showModal} transparent animationType="fade">
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalText}>
-                  item :{' '}
-                  {firebaseData?.Food && addedToCart.length > 0
-                    ? firebaseData.Food[addedToCart[currentCartIndex]]
-                    : 'No item'}
-                </Text>
-                <TouchableOpacity
-                  onPress={closeModal}
-                  style={styles.closeButton}>
-                  <Text style={styles.closeButtonText}>Close</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
           <View>
             <View style={styles.foodItemsView}>
               {firebaseData?.Food ? (
@@ -373,5 +304,4 @@ const Home = () => {
     </SafeAreaView>
   );
 };
-
 export default Home;

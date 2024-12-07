@@ -16,14 +16,10 @@ import Images from '../../Constants/Images';
 import data from '../../Data/MapTextData';
 import styles from './styles';
 import Geocoder from 'react-native-geocoding';
-import {useDispatch} from 'react-redux';
-import {setMapData} from '../../Redux/Action';
 
 const MapAllow = () => {
-  const [location, setLocation] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   const onLocationTurnOn = async () => {
     setLoading(true);
@@ -38,36 +34,31 @@ const MapAllow = () => {
           buttonNegative: 'Cancel',
         },
       );
+
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        navigation.navigate('Login'); // Navigate immediately
         Geolocation.getCurrentPosition(
           position => {
             const {latitude, longitude} = position.coords;
             Geocoder.from(latitude, longitude)
               .then(json => {
-                const formatted_Address = json.results[0].formatted_address;
-                setLocation(formatted_Address);
-                dispatch(setMapData(formatted_Address)); // Update Redux state
+                const formatted_Address = json.results[0]?.formatted_address || 'Unknown location';
                 console.log(formatted_Address);
-                navigation.navigate('Login', {location: formatted_Address});
               })
-              .catch(err => {
-                console.log('Geocoding error:', err);
-              });
-            console.log('User position:', position);
+              .catch(err => console.log('Geocoding error:', err));
           },
           error => {
             console.log('Error getting location:', error.message);
           },
-          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+          {enableHighAccuracy: true, timeout: 10000, maximumAge: 5000}, // Prioritize speed
         );
-        setLoading(false)
       } else {
         console.log('Location Permission Denied');
-        setLoading(false)
       }
     } catch (error) {
       console.log('Permission error:', error);
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,7 +75,10 @@ const MapAllow = () => {
         </View>
       ))}
       <View style={styles.btnPosition}>
-        <Button Name={loading ? <ActivityIndicator color={'white'} size={25}/> : 'Yes, turn it on'} onPress={onLocationTurnOn} />
+        <Button
+          Name={loading ? <ActivityIndicator color={'white'} size={25} /> : 'Yes, turn it on'}
+          onPress={onLocationTurnOn}
+        />
         <TouchableOpacity>
           <Text style={{fontFamily: 'Poppins-Medium'}}>Cancel</Text>
         </TouchableOpacity>

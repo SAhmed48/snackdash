@@ -1,45 +1,15 @@
 import {
-  View,
-  Text,
   SafeAreaView,
-  Image,
-  TouchableOpacity,
   StatusBar,
   StyleSheet,
 } from 'react-native';
 import React from 'react';
-import Feather from 'react-native-vector-icons/Feather';
 import MaterialTopTab from '../../Navigation/MaterialTopNavigator';
-import {useSelector} from 'react-redux';
 
 const AddCart = () => {
-  const [expanded, setExpanded] = React.useState(false);
-  const mapDetails = useSelector(state => state.Reducer.mapDetails);
-
-  const toggleExpand = () => {
-    setExpanded(!expanded);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#f6f6f6'} barStyle={'dark-content'} />
-      <View style={styles.topView}>
-        <View style={styles.deliverView}>
-          <Text style={styles.deliverText}>Deliver to</Text>
-          <View style={styles.mapsView}>
-            <Image source={require('../../Assets/Images/location.png')} />
-            <Text style={styles.mapsText}>
-              {expanded ? mapDetails : `${mapDetails.substring(0, 20)}`}
-            </Text>
-            <TouchableOpacity onPress={toggleExpand}>
-              <Text style={styles.toggleText}>{expanded ? '<' : '>'}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.bellIconStyle}>
-          <Feather name={'bell'} size={23} color={'grey'} />
-        </View>
-      </View>
       <MaterialTopTab />
     </SafeAreaView>
   );

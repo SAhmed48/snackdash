@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   foodCategoryText: {
     fontFamily: 'Poppins-Medium',
-    fontSize: verticalScale(14),
+    fontSize: fontScale(14),
     marginTop: verticalScale(5),
   },
   lineBreakView: {

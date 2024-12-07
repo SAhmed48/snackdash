@@ -12,7 +12,7 @@ import {
 import React from 'react';
 import Images from '../../../Constants/Images';
 import {useNavigation} from '@react-navigation/native';
-import auth, {firebase} from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 import {
