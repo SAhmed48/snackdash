@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   SET_ADD_TO_CART_DETAILS,
   SET_FAVORITE_DETAILS,
@@ -84,9 +84,9 @@ const Reducer = (state = initialData, action) => {
         authData: action.payload,
       };
     case SET_TOKEN:
-      AsyncStorage.setItem('userToken', action.payload).then(token =>
-        console.log(token),
-      ).catch(err => console.log(err));
+      // AsyncStorage.setItem('userToken', action.payload).then(token =>
+      //   console.log(token),
+      // ).catch(err => console.log(err));
       return {
         ...state,
         userToken: action.payload,

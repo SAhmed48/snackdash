@@ -14,7 +14,7 @@ import React from 'react';
 import Geocoder from 'react-native-geocoding';
 import Geolocation from '@react-native-community/geolocation';
 import {useDispatch, useSelector} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import {setMapData} from '../../Redux/Action';
 
 const Header = () => {
@@ -32,8 +32,8 @@ const Header = () => {
   React.useEffect(() => {
     getLocationUser();
     setLocalCart(setAddToCartDetails);
-    async () => AsyncStorage.setItem('cart', JSON.stringify(localCart));
-    console.log(localCart);
+    // async () => AsyncStorage.setItem('cart', JSON.stringify(localCart));
+    // console.log(localCart);
     const cartListener = DeviceEventEmitter.addListener('cart', index => {
       setLocalCart(prevState => {
         if (!prevState.includes(index)) {
@@ -85,7 +85,7 @@ const Header = () => {
     } else {
       setShowModal(false);
       setCurrentCartIndex(0);
-      async () => await AsyncStorage.removeItem('cart');
+      // async () => await AsyncStorage.removeItem('cart');
       setLocalCart([]);
     }
   }, [currentCartIndex, localCart]);

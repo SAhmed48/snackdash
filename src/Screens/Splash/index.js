@@ -34,7 +34,7 @@ const Splash = () => {
         console.log('Error:', error);
         navigation.reset({
           index: 0,
-          routes: [{name: 'Login'}], // Fallback navigation in case of error
+          routes: [{name: 'Login'}],
         });
       }
     };

@@ -1,5 +1,5 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import Splash from '../../Screens/Splash';
 import OnBoarding from '../../Screens/OnBoarding';
 import MapAllow from '../../Screens/MapAllow';
@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 
 
 const Navigation = () => {
-  const Stack = createNativeStackNavigator(); 
+  const Stack = createStackNavigator(); 
   const navigation = useNavigation();
   return (
     <Stack.Navigator initialRouteName={'Splash'}>
