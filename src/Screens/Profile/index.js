@@ -6,7 +6,6 @@ import {
   FlatList,
   StyleSheet,
   Image,
-  TouchableOpacity,
   Pressable,
   ToastAndroid,
 } from 'react-native';

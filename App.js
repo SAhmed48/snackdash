@@ -6,25 +6,25 @@ import {Store} from './src/Redux/Store';
 import {AppState} from 'react-native';
 
 const App = () => {
-  // const appState = React.useRef(AppState.currentState);
-  // React.useEffect(() => {
-  //   const handleAppStateChange = nextAppState => {
-  //     if (
-  //       appState.current.match(/inactive|background/) &&
-  //       nextAppState === 'active'
-  //     ) {
-  //       console.log('App has come to the foreground!');
-  //     }
-  //     appState.current = nextAppState;
-  //   };
-  //   const subscription = AppState.addEventListener(
-  //     'change',
-  //     handleAppStateChange,
-  //   );
-  //   return () => {
-  //     subscription.remove();
-  //   };
-  // }, []);
+  const appState = React.useRef(AppState.currentState);
+  React.useEffect(() => {
+    const handleAppStateChange = nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('App has come to the foreground!');
+      }
+      appState.current = nextAppState;
+    };
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
+    return () => {
+      subscription.remove();
+    };
+  }, []);
   return (
     <Provider store={Store}>
       <NavigationContainer>

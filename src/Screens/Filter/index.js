@@ -12,7 +12,7 @@ import React, {useState, useRef, useCallback} from 'react';
 import Slider from 'rn-range-slider';
 import {fontScale, horizontalScale, verticalScale} from '../../Utils/ScaleSize';
 import {CategoryData, foodData, locationData} from '../../Data/BtnData';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const RenderThumb = () => <View style={styles.thumb} />;
 const RenderRail = () => <View style={styles.rail} />;
@@ -68,36 +68,11 @@ const Filter = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#f6f6f6'} barStyle={'dark-content'} />
-      <View
-        style={{
-          width: '100%',
-          height: verticalScale(65),
-          backgroundColor: '#f6f6f6',
-        }}
-      />
-      <View style={{alignItems: 'center'}}>
-        <View
-          style={{
-            marginTop: verticalScale(35),
-            width: horizontalScale(330),
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-          }}>
-          <Text
-            style={{
-              fontSize: fontScale(14),
-              fontFamily: 'Poppins-Medium',
-              color: 'black',
-            }}>
-            Price Range
-          </Text>
-          <Text
-            style={{
-              fontFamily: 'Poppins-Medium',
-              fontSize: fontScale(14),
-              color: 'black',
-            }}>
+      <View style={styles.topView} />
+      <View style={styles.priceRangeView}>
+        <View style={styles.priceNumberView}>
+          <Text style={styles.priceRangeText}>Price Range</Text>
+          <Text style={styles.priceNumberText}>
             ${low} - ${high}
           </Text>
         </View>
@@ -117,31 +92,10 @@ const Filter = () => {
           onValueChanged={handleValueChange}
         />
       </View>
-      <View style={{alignItems: 'center'}}>
-        <View
-          style={{
-            marginTop: verticalScale(35),
-            width: horizontalScale(330),
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-          }}>
-          <Text
-            style={{
-              fontSize: fontScale(14),
-              fontFamily: 'Poppins-Medium',
-              color: 'black',
-            }}>
-            Discount
-          </Text>
-          <Text
-            style={{
-              fontFamily: 'Poppins-Medium',
-              fontSize: fontScale(14),
-              color: 'black',
-            }}>
-            {value}%
-          </Text>
+      <View style={styles.dicountView}>
+        <View style={styles.discountPercentageView}>
+          <Text style={styles.priceRangeText}>Discount</Text>
+          <Text style={styles.priceNumberText}>{value}%</Text>
         </View>
       </View>
       <View
@@ -167,34 +121,27 @@ const Filter = () => {
           ]}
         />
       </View>
-      <View style={{marginTop: verticalScale(40)}}>
-        <View style={{alignItems: 'center'}}>
-          <View
-            style={{
-              width: horizontalScale(330),
-            }}>
-            <Text
-              style={{fontFamily: 'Poppins-Medium', fontSize: fontScale(14)}}>
-              Category
-            </Text>
+      <View style={styles.CategoryView}>
+        <View style={styles.CategoryCenterView}>
+          <View style={styles.CategoryWidth}>
+            <Text style={styles.CategoryTextStyle}>Category</Text>
           </View>
         </View>
-        <View style={{alignItems: 'center', marginTop: verticalScale(15)}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              width: horizontalScale(350),
-              alignItems: 'center',
-              justifyContent: 'space-around',
-            }}>
+        <View style={styles.CategoryInsideView}>
+          <View style={styles.CategoryFlexView}>
             {CategoryData.map((item, index) => (
               <TouchableOpacity
-                onPress={() => setSelectedItem(item.title === selectedItem ? null : item.title)}
+                onPress={() =>
+                  setSelectedItem(
+                    item.title === selectedItem ? null : item.title,
+                  )
+                }
                 key={index}
                 style={{
                   width: horizontalScale(100),
                   height: verticalScale(40),
-                  backgroundColor: selectedItem === item.title ? '#33b056' : '#f6f6f6',
+                  backgroundColor:
+                    selectedItem === item.title ? '#33b056' : '#f6f6f6',
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: 10,
@@ -234,12 +181,17 @@ const Filter = () => {
             }}>
             {locationData.map((item, index) => (
               <TouchableOpacity
-                onPress={() => setSelectedLocation(item.id === selectedLocation ? null : item.id)}
+                onPress={() =>
+                  setSelectedLocation(
+                    item.id === selectedLocation ? null : item.id,
+                  )
+                }
                 key={index}
                 style={{
                   width: horizontalScale(80),
                   height: verticalScale(40),
-                  backgroundColor: selectedLocation === item.id ? '#33b056' : '#f6f6f6',
+                  backgroundColor:
+                    selectedLocation === item.id ? '#33b056' : '#f6f6f6',
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: 10,
@@ -282,12 +234,15 @@ const Filter = () => {
             }}>
             {foodData.map((item, index) => (
               <TouchableOpacity
-                onPress={() => setSelectedFood(item.id === selectedFood ? null : item.id)}
+                onPress={() =>
+                  setSelectedFood(item.id === selectedFood ? null : item.id)
+                }
                 key={index}
                 style={{
                   width: horizontalScale(100),
                   height: verticalScale(50),
-                  backgroundColor: selectedFood === item.id ? '#33b056' : '#f6f6f6',
+                  backgroundColor:
+                    selectedFood === item.id ? '#33b056' : '#f6f6f6',
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: 10,
@@ -346,6 +301,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  topView: {
+    width: '100%',
+    height: verticalScale(65),
+    backgroundColor: '#f6f6f6',
+  },
+  priceRangeView: {
+    alignItems: 'center',
+  },
+  priceNumberView: {
+    marginTop: verticalScale(35),
+    width: horizontalScale(330),
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+  priceRangeText: {
+    fontSize: fontScale(14),
+    fontFamily: 'Poppins-Medium',
+    color: 'black',
+  },
+  priceNumberText: {
+    fontFamily: 'Poppins-Medium',
+    fontSize: fontScale(14),
+    color: 'black',
   },
   rangeTitle: {
     textAlign: 'center',
@@ -416,5 +396,38 @@ const styles = StyleSheet.create({
   rangeSlider: {
     width: horizontalScale(340),
     marginTop: 20,
+  },
+  dicountView: {
+    alignItems: 'center',
+  },
+  discountPercentageView: {
+    marginTop: verticalScale(35),
+    width: horizontalScale(330),
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+  CategoryView: {
+    marginTop: verticalScale(40),
+  },
+  CategoryCenterView: {
+    alignItems: 'center',
+  },
+  CategoryWidth: {
+    width: horizontalScale(330),
+  },
+  CategoryTextStyle: {
+    fontFamily: 'Poppins-Medium',
+    fontSize: fontScale(14),
+  },
+  CategoryInsideView: {
+    alignItems: 'center',
+    marginTop: verticalScale(15),
+  },
+  CategoryFlexView: {
+    flexDirection: 'row',
+    width: horizontalScale(350),
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
 });

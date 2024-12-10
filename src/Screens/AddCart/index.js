@@ -20,48 +20,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  topView: {
-    width: '100%',
-    height: 80,
-    backgroundColor: '#f6f6f6',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  deliverView: {
-    marginLeft: 30,
-  },
-  deliverText: {
-    fontFamily: 'Poppins-Regular',
-    fontSize: 11,
-    color: '#a7a7a6',
-  },
-  mapsView: {
-    flexDirection: 'row',
-    width: 300,
-    alignItems: 'center',
-    gap: 10,
-  },
-  mapsText: {
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 12,
-  },
-  toggleText: {
-    color: 'black',
-    fontSize: 15,
-    transform: [{rotate: '90deg'}],
-  },
-  bellIconStyle: {
-    position: 'absolute',
-    alignSelf: 'flex-end',
-    right: 30,
-    width: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 30,
-    height: 40,
-    marginLeft: 30,
-    backgroundColor: 'white',
-  },
 });
 
 export default AddCart;

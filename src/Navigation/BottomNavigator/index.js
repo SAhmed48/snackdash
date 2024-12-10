@@ -5,15 +5,7 @@ import Favorits from '../../Screens/Favourites';
 import Track from '../../Screens/Track';
 import UserProfile from '../../Screens/Profile';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  ToastAndroid,
-  View,
-  DeviceEventEmitter,
-} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -38,10 +30,10 @@ const TabNavigator = () => {
     state => state.Reducer.setAddToCartDetails,
   );
   const getHeader = routeName => {
-    if (['Home', 'Profile', 'Cart'].includes(routeName)) {
+    if (['Home', 'Profile', 'Cart', 'Track'].includes(routeName)) {
       return () => <Header />;
     }
-    return null;
+    return undefined;
   };
   return (
     <Tab.Navigator
@@ -49,7 +41,7 @@ const TabNavigator = () => {
         tabBarHideOnKeyboard: true,
         tabBarActiveBackgroundColor: 'white',
         headerShown: true,
-        header: getHeader(route.name),
+        header: getHeader(route.name), // Pass the result of the function
         tabBarStyle: {
           height: verticalScale(70),
           display:
@@ -93,6 +85,7 @@ const TabNavigator = () => {
         component={Favorits}
         options={{
           headerTransparent: true,
+          headerShown: true,
           tabBarIcon: ({focused}) => (
             <Octicons
               name="heart-fill"
@@ -194,37 +187,37 @@ const TabNavigator = () => {
         name="Track"
         component={Track}
         options={{
-          headerRight: () => (
-            <View
-              style={{
-                marginRight: 40,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 30,
-                height: 40,
-                width: 40,
-                backgroundColor: 'white',
-              }}>
-              <Feather name={'bell'} size={23} color={'grey'} />
-            </View>
-          ),
-          headerLeft: () => (
-            <View style={{marginLeft: 25}}>
-              <Pressable
-                onPress={() => navigation.navigate('Home')}
-                style={styles.arrowBtnStyle}>
-                <Image
-                  source={require('../../Assets/Images/right-arrow.png')}
-                  style={styles.arrowImageStyle}
-                />
-              </Pressable>
-            </View>
-          ),
-          headerTitle: 'My Location',
-          headerTitleStyle: {
-            fontFamily: 'Poppins-Medium',
-          },
-          headerTransparent: true,
+          // headerRight: () => (
+          //   <View
+          //     style={{
+          //       marginRight: 40,
+          //       alignItems: 'center',
+          //       justifyContent: 'center',
+          //       borderRadius: 30,
+          //       height: 40,
+          //       width: 40,
+          //       backgroundColor: 'white',
+          //     }}>
+          //     <Feather name={'bell'} size={23} color={'grey'} />
+          //   </View>
+          // ),
+          // headerLeft: () => (
+          //   <View style={{marginLeft: 25}}>
+          //     <Pressable
+          //       onPress={() => navigation.navigate('Home')}
+          //       style={styles.arrowBtnStyle}>
+          //       <Image
+          //         source={require('../../Assets/Images/right-arrow.png')}
+          //         style={styles.arrowImageStyle}
+          //       />
+          //     </Pressable>
+          //   </View>
+          // ),
+          // headerTitle: 'My Location',
+          // headerTitleStyle: {
+          //   fontFamily: 'Poppins-Medium',
+          // },
+          // headerTransparent: true,
           tabBarIcon: ({focused}) => (
             <MaterialIcons
               name="track-changes"
@@ -380,8 +373,11 @@ const TabNavigator = () => {
         name="Coordinates"
         component={MyLocation}
         options={{
-          headerTitle: 'MyLocation',
+          headerTitle: 'My Location',
           tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+          },
           headerTransparent: true,
           headerTitleStyle: {
             fontFamily: 'Poppins-Medium',

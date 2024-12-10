@@ -1,12 +1,114 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  SafeAreaView,
+  StyleSheet,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import Geocoder from 'react-native-geocoding';
+import Geolocation from '@react-native-community/geolocation';
+import MapboxGL from '@rnmapbox/maps';
+import {fontScale, horizontalScale, verticalScale} from '../../Utils/ScaleSize';
+import 'react-native-get-random-values';
+import BottomSheet from '@gorhom/bottom-sheet';
+
+MapboxGL.setAccessToken(
+  'sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q',
+);
+MapboxGL.setTelemetryEnabled(false);
+Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
 
 const Track = () => {
-  return (
-    <View>
-      <Text>index</Text>
-    </View>
-  )
-}
+  const [location, setLocation] = useState('');
+  const [coordinates, setCoordinates] = useState([0, 0]);
 
-export default Track
+  const snapPoints = React.useMemo(() => ['95%'], []);
+  const sheetRef = React.useRef(null);
+
+  useEffect(() => {
+    getAddress();
+  }, []);
+
+  const getAddress = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        setCoordinates([longitude, latitude]);
+        Geocoder.from(latitude, longitude)
+          .then(json => {
+            const formattedAddress = json.results[0].formatted_address;
+            setLocation(formattedAddress);
+          })
+          .catch(error => console.log(error));
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 6000,
+        maximumAge: 10000,
+      },
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={'#f6f6f6'} />
+      <View style={styles.mapContainer}>
+        <MapboxGL.MapView
+          style={StyleSheet.absoluteFillObject}
+          zoomEnabled={true}
+          styleURL="mapbox://styles/mapbox/navigation-day-v1"
+          rotateEnabled={true}
+          logoEnabled={false}>
+          <MapboxGL.Camera
+            animationMode="flyTo"
+            animationDuration={2000}
+            zoomLevel={15}
+            pitch={60}
+            centerCoordinate={coordinates}
+          />
+          <MapboxGL.UserLocation visible={true} />
+          <MapboxGL.PointAnnotation
+            id="user-location-marker"
+            coordinate={coordinates}
+          />
+        </MapboxGL.MapView>
+      </View>
+      <BottomSheet snapPoints={snapPoints} ref={sheetRef} />
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  mapContainer: {
+    flex: 1,
+  },
+  addressContainer: {
+    width: horizontalScale(350),
+  },
+  inputText: {
+    paddingVertical: 10,
+    paddingHorizontal: horizontalScale(70),
+    fontFamily: 'Poppins-Regular',
+    fontSize: fontScale(15),
+    lineHeight: fontScale(18), // Ensure consistent spacing
+    backgroundColor: 'white',
+    color: 'black',
+    width: horizontalScale(330),
+    height: verticalScale(45),
+    borderRadius: 30,
+    elevation: 10,
+    textAlignVertical: 'center', // Center aligns text vertically
+    includeFontPadding: false, //
+  },
+});
+
+export default Track;
