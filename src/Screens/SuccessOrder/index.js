@@ -8,10 +8,10 @@ import {
 } from 'react-native';
 import React from 'react';
 import LottieView from 'lottie-react-native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const SuccessOrder = () => {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#f6f6f6'} barStyle={'dark-content'} />
@@ -25,7 +25,7 @@ const SuccessOrder = () => {
         style={{
           alignItems: 'center',
           gap: 10,
-          bottom: 50
+          bottom: 50,
         }}>
         <Text style={styles.text}>Your Order Done Successfully</Text>
         <Text style={styles.text1}>You will get your order within 12 min</Text>
@@ -33,6 +33,7 @@ const SuccessOrder = () => {
       </View>
       <View style={{alignItems: 'center', marginTop: 40, gap: 20}}>
         <TouchableOpacity
+          onPress={() => navigation.navigate('Track')}
           style={{
             width: 300,
             height: 50,
@@ -43,12 +44,23 @@ const SuccessOrder = () => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Text style={{color: 'green', fontFamily: 'Poppins-SemiBold', fontSize: 16}}>
+          <Text
+            style={{
+              color: 'green',
+              fontFamily: 'Poppins-SemiBold',
+              fontSize: 16,
+            }}
+            >
             Track Your Order
           </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Text style={{color: 'grey', fontFamily: 'Poppins-SemiBold', fontSize: 14}}>
+          <Text
+            style={{
+              color: 'grey',
+              fontFamily: 'Poppins-SemiBold',
+              fontSize: 14,
+            }}>
             Back to Home
           </Text>
         </TouchableOpacity>

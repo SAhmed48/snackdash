@@ -4,6 +4,11 @@ apply plugin: "com.facebook.react"
 apply plugin: 'com.google.gms.google-services'
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
+// Enable Hermes
+project.ext.react = [
+    enableHermes: true,  // clean and rebuild after enabling Hermes
+]
+
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -85,7 +90,14 @@ android {
        }
    }
     
-
+    splits {
+        abi {
+            enable true // Enable ABI splitting
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a' // Include only necessary ABIs
+            universalApk false // Disable universal APK
+        }
+    }
     namespace "com.jarvis.sahlah"
     defaultConfig {
         applicationId "com.jarvis.sahlah"
@@ -111,7 +123,9 @@ android {
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
@@ -125,7 +139,7 @@ dependencies {
     implementation('com.google.android.gms:play-services-auth:20.7.0')
     implementation project(':react-native-config')
     implementation project(':react-native-vector-icons')
-    if (hermesEnabled.toBoolean()) {
+    if (project.ext.react.enableHermes) {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
