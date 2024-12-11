@@ -4,8 +4,6 @@ import {
   SafeAreaView,
   StyleSheet,
   StatusBar,
-  Text,
-  TouchableOpacity,
 } from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import Geolocation from '@react-native-community/geolocation';
@@ -13,12 +11,14 @@ import MapboxGL from '@rnmapbox/maps';
 import {fontScale, horizontalScale, verticalScale} from '../../Utils/ScaleSize';
 import 'react-native-get-random-values';
 import BottomSheet from '@gorhom/bottom-sheet';
+import Config from 'react-native-config';
 
-MapboxGL.setAccessToken(
-  'sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q',
-);
+const MapBoxToken = Config.MAPBOX_TOKEN;
+const GoogleMapApi = Config.GOOGLE_MAP_API2;
+
+MapboxGL.setAccessToken(MapBoxToken);
 MapboxGL.setTelemetryEnabled(false);
-Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
+Geocoder.init(GoogleMapApi);
 
 const Track = () => {
   const [location, setLocation] = useState('');

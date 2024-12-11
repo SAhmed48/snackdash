@@ -86,6 +86,6 @@ xmlns:tools="http://schemas.android.com/tools"
     	<meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
       <meta-data
       android:name="com.google.android.geo.API_KEY"
-      android:value="AIzaSyAeBk8WE1KNG7JrWDuPgEP_uI6Bvs6dd5Y"/>
+      android:value=""/>
     </application>
 </manifest>

@@ -15,12 +15,15 @@ import {fontScale, horizontalScale, verticalScale} from '../../Utils/ScaleSize';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import 'react-native-get-random-values';
 import Feather from 'react-native-vector-icons/Feather';
+import Config from 'react-native-config';
 
-MapboxGL.setAccessToken(
-  'sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q',
-);
+const MapBoxToken = Config.MAPBOX_TOKEN;
+const GoogleMapApi = Config.GOOGLE_MAP_API2
+
+MapboxGL.setAccessToken(MapBoxToken)
 MapboxGL.setTelemetryEnabled(false);
-Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
+Geocoder.init(GoogleMapApi);
+
 
 const MyLocation = () => {
   const [location, setLocation] = useState('');
@@ -92,7 +95,7 @@ const MyLocation = () => {
               textInput: styles.inputText,
             }}
             query={{
-              key: 'AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA',
+              key: GoogleMapApi,
               language: 'en',
             }}
             onFail={error => console.log(error)}
