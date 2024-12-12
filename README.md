@@ -1,21 +1,27 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+This is a new [**React Native**](https://reactnative.dev) project using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+
+# Snack Dash
+
+SnackDash is a food delivery app that combines convenience with advanced features like Mapbox integration. Built using React Native, SnackDash offers seamless functionality across both Android and iOS platforms.
+
+# Purpose
+
+The purpose of SnackDash is to revolutionize the food delivery experience by providing users with an intuitive interface, real-time tracking of deliveries via Mapbox, and a wide selection of restaurants to choose from. It is designed to make ordering food effortless, transparent, and enjoyable for customers.
 
 # Getting Started
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
-## Step 1: Start the Metro Server
+## Step 1: Install Dependencies
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
+Before starting the app, make sure to install all necessary dependencies. From the root of your project, run:
 
 ```bash
 # using npm
-npm start
+npm install
 
 # OR using Yarn
-yarn start
+yarn install
 ```
 
 ## Step 2: Start your Application
@@ -46,14 +52,47 @@ If everything is set up _correctly_, you should see your new app running in your
 
 This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
 
-## Step 3: Modifying your App
+
+# Building the App
+
+To create production builds of the app:
+
+# Android
+
+1. Generate a signed APK:
+
+```bash
+cd android
+./gradlew assembleRelease 
+```
+The build will be located in android/app/build/outputs/apk/release/.
+
+2. To create an Android App Bundle (AAB) for Play Store:
+
+```bash
+./gradlew bundleRelease
+```
+
+# IOS
+
+1. Open the ios folder in Xcode.
+
+2. Select the target device or simulator.
+
+3. Go to Product > Archive to generate the build.
+
+4. Use the Organizer to export the build for App Store submission or manual installation.
+
+# Modifying your App
 
 Now that you have successfully run the app, let's modify it.
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+Open App.tsx in your text editor and make changes.
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+   1. For Android: Press the R key twice or select "Reload" from the Developer Menu (Ctrl + M (Windows/Linux) or Cmd + M (macOS)) to see changes.
+
+   2. For iOS: Press Cmd + R in the iOS Simulator to reload.
+
 
 ## Congratulations! :tada:
 

@@ -3,6 +3,8 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Images from '../../Constants/Images';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import crashlytics from '@react-native-firebase/crashlytics';
+
 
 const Splash = () => {
   const navigation = useNavigation();
@@ -38,6 +40,12 @@ const Splash = () => {
         });
       }
     };
+
+    const crash = async () => {
+      crashlytics().log('app crashed');
+    };
+
+    crash();
 
     handleNavigation();
   }, [navigation]);

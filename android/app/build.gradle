@@ -2,6 +2,7 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 // Enable Hermes
@@ -90,14 +91,7 @@ android {
        }
    }
     
-    splits {
-        abi {
-            enable true // Enable ABI splitting
-            reset()
-            include 'armeabi-v7a', 'arm64-v8a' // Include only necessary ABIs
-            universalApk false // Disable universal APK
-        }
-    }
+    
     namespace "com.jarvis.sahlah"
     defaultConfig {
         applicationId "com.jarvis.sahlah"
