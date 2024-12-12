@@ -91,7 +91,6 @@ android {
        }
    }
     
-    
     namespace "com.jarvis.sahlah"
     defaultConfig {
         applicationId "com.jarvis.sahlah"
