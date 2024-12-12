@@ -78,7 +78,8 @@ const Track = () => {
           />
         </MapboxGL.MapView>
       </View>
-      <BottomSheet snapPoints={snapPoints} ref={sheetRef} />
+      <BottomSheet snapPoints={snapPoints} ref={sheetRef} 
+      />
     </SafeAreaView>
   );
 };
