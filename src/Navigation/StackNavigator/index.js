@@ -11,7 +11,6 @@ import {Pressable, View, Image, StyleSheet} from 'react-native';
 import SuccessOrder from '../../Screens/SuccessOrder';
 import { useNavigation } from '@react-navigation/native';
 
-
 const Navigation = () => {
   const Stack = createStackNavigator(); 
   const navigation = useNavigation();
@@ -58,7 +57,7 @@ const Navigation = () => {
             fontFamily: 'Poppins-Medium',
           },
           headerLeft: () => (
-            <View style={{right: 10}}>
+            <View>
               <Pressable
                 onPress={() => navigation.navigate('Home')}
                 style={styles.arrowBtnStyle}>

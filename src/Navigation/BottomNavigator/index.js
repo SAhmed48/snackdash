@@ -46,7 +46,7 @@ const TabNavigator = () => {
           height: verticalScale(70),
           display:
             route.name === 'Track'
-              ? 'none'
+              ? 'flex'
               : route.name === 'Check'
               ? 'flex'
               : null,

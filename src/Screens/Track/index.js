@@ -18,7 +18,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import axios from 'axios';
 import {horizontalScale, fontScale, verticalScale} from '../../Utils/ScaleSize';
 import {ProgressBar} from 'react-native-paper';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const MapBoxToken = Config.MAPBOX_TOKEN;
@@ -33,13 +32,14 @@ const Track = () => {
   const [coordinates, setCoordinates] = useState([0, 0]);
   const [riderCoordinates, setRiderCoordinates] = useState([0, 0]);
   const [routeCoordinates, setRouteCoordinates] = useState(null);
+  const [sheet, setSheet] = useState(false);
 
   const bottomSheetRef = useRef(null);
   const cameraRef = useRef(null);
-  const snapPoints = useMemo(() => ['25%', '50%', '70%'], []);
-  const progress1 = useRef(new Animated.Value(0)).current; // For first bar
-  const progress2 = useRef(new Animated.Value(0)).current; // For second bar
-  const progress3 = useRef(new Animated.Value(0)).current; // For third bar
+  const snapPoints = useMemo(() => ['47%'], []);
+  const progress1 = useRef(new Animated.Value(0)).current;
+  const progress2 = useRef(new Animated.Value(0)).current;
+  const progress3 = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     getAddress();
@@ -50,14 +50,18 @@ const Track = () => {
         riderCoordinates[1],
         riderCoordinates[0],
       );
-      getRoute(coordinates, riderCoordinates); // Show the direction
+      getRoute(coordinates, riderCoordinates);
     }
     startAnimation(progress1, () => {
       startAnimation(progress2, () => {
         startAnimation(progress3);
       });
     });
-  }, [coordinates, riderCoordinates]);
+    if(routeCoordinates){
+      fitToRoute(routeCoordinates);
+    }
+    setSheet(true);
+  }, [coordinates, riderCoordinates, routeCoordinates]);
 
   const startAnimation = (progress, onComplete) => {
     if (isNaN(progress._value)) {
@@ -65,12 +69,12 @@ const Track = () => {
       return;
     }
     Animated.timing(progress, {
-      toValue: 1, // Complete the progress
-      duration: 3000, // 3 seconds for each bar
-      useNativeDriver: false, // Required for animating non-transform properties
+      toValue: 1,
+      duration: 3000,
+      useNativeDriver: false,
     }).start(() => {
       if (onComplete) {
-        onComplete(); // Trigger the next animation
+        onComplete();
       }
     });
   };
@@ -112,12 +116,30 @@ const Track = () => {
     );
   }, []);
 
+  const fitToRoute = routeCoords => {
+    const lats = routeCoords.map(coord => coord[1]);
+    const lngs = routeCoords.map(coord => coord[0]);
+
+    const north = Math.max(...lats);
+    const south = Math.min(...lats);
+    const east = Math.max(...lngs);
+    const west = Math.min(...lngs);
+
+    cameraRef.current?.setCamera({
+      bounds: {
+        ne: [east, north],
+        sw: [west, south],
+      },
+      padding: 50, // Optional padding
+      animationDuration: 1000,
+    });
+  };
+
   const getRoute = useCallback(async (origin, destination) => {
     try {
       const response = await axios.get(
         `https://api.mapbox.com/directions/v5/mapbox/driving/${origin[0]},${origin[1]};${destination[0]},${destination[1]}?geometries=geojson&access_token=${MapBoxToken}`,
       );
-      // Check for a successful response status
       if (response.status !== 200) {
         console.error(
           'Failed to fetch route:',
@@ -127,8 +149,6 @@ const Track = () => {
         return;
       }
       const data = response.data; // Axios auto-parses JSON
-      console.log('Route data:', data);
-
       if (!data.routes || data.routes.length === 0) {
         console.error('No routes found in response');
         return;
@@ -152,7 +172,7 @@ const Track = () => {
       console.error('Invalid inputs for distance calculation');
       return 0;
     }
-    const R = 6371; // Earth's radius in kilometers
+    const R = 6371;
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLon = ((lon2 - lon1) * Math.PI) / 180;
     const lat1Rad = (lat1 * Math.PI) / 180;
@@ -174,7 +194,7 @@ const Track = () => {
         <View style={StyleSheet.absoluteFillObject}>
           <MapboxGL.MapView
             style={styles.mapContainer}
-            styleURL="mapbox://styles/mapbox/navigation-day-v1"
+            styleURL="mapbox://styles/mapbox/navigation-night-v1"
             zoomEnabled
             rotateEnabled
             logoEnabled={false}>
@@ -182,8 +202,7 @@ const Track = () => {
               ref={cameraRef}
               animationMode="flyTo"
               animationDuration={2000}
-              zoomLevel={15}
-              pitch={60}
+              zoomLevel={14}
               centerCoordinate={coordinates}
             />
             <MapboxGL.UserLocation visible />
@@ -199,191 +218,225 @@ const Track = () => {
               <MapboxGL.ShapeSource
                 id="routeSource"
                 shape={{
-                  type: 'LineString',
+                  type: 'GeometryCollection',
                   geometry: {type: 'LineString', coordinates: routeCoordinates},
                 }}>
                 <MapboxGL.LineLayer
                   id="routeLine"
-                  style={styles.routeLineStyle}
+                  style={{lineColor: 'white', lineWidth: 3}}
                 />
               </MapboxGL.ShapeSource>
             )}
           </MapboxGL.MapView>
         </View>
-        <View style={{flex: 1}}>
-          <BottomSheet
-            style={styles.bottomSheet}
-            backgroundStyle={{
-              borderRadius: 30,
-            }}
-            ref={bottomSheetRef}
-            snapPoints={snapPoints}>
-            <BottomSheetView style={{flex: 1}}>
-              <View style={{alignItems: 'center'}}>
-                <View
-                  style={{
-                    width: horizontalScale(380),
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: fontScale(20),
-                      fontFamily: 'Poppins-Bold',
-                    }}>
-                    On the Way
-                  </Text>
+        {sheet && (
+          <View style={{flex: 1}}>
+            <BottomSheet
+              style={styles.bottomSheet}
+              backgroundStyle={{
+                borderRadius: 30,
+              }}
+              ref={bottomSheetRef}
+              snapPoints={snapPoints}>
+              <BottomSheetView style={{flex: 1}}>
+                <View style={{alignItems: 'center'}}>
                   <View
                     style={{
-                      width: horizontalScale(100),
-                      height: verticalScale(40),
-                      borderRadius: 30,
-                      borderWidth: 1,
-                      borderColor: '#faf4fa',
+                      width: horizontalScale(380),
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: fontScale(20),
+                        fontFamily: 'Poppins-Bold',
+                      }}>
+                      On the Way
+                    </Text>
+                    <View
+                      style={{
+                        width: horizontalScale(100),
+                        height: verticalScale(40),
+                        borderRadius: 30,
+                        borderWidth: 1,
+                        borderColor: '#faf4fa',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          width: horizontalScale(75),
+                          justifyContent: 'space-between',
+                        }}>
+                        <MaterialCommunityIcons
+                          name={'clock'}
+                          color={'#33b056'}
+                          size={22}
+                        />
+                        <Text
+                          style={{
+                            fontFamily: 'Poppins-Regular',
+                            fontSize: fontScale(13.5),
+                            top: verticalScale(2),
+                          }}>
+                          10 min
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={{alignItems: 'center'}}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        width: horizontalScale(390),
+                        justifyContent: 'space-around',
+                      }}>
+                      <Animated.View style={styles.progressContainer}>
+                        <Text style={styles.progressText}>Order Placed</Text>
+                        <ProgressBar
+                          progress={10}
+                          color="#4caf50"
+                          style={styles.progressBar}
+                        />
+                      </Animated.View>
+                      <Animated.View style={styles.progressContainer}>
+                        <Text style={styles.progressText}>On the Way</Text>
+                        <ProgressBar
+                          progress={10}
+                          color="#4caf50"
+                          style={styles.progressBar}
+                          indeterminate
+                        />
+                      </Animated.View>
+                      <Animated.View style={styles.progressContainer}>
+                        <Text style={styles.progressText}>Delivered</Text>
+                        <ProgressBar
+                          progress={10}
+                          color="#4caf50"
+                          style={styles.progressBar}
+                          indeterminate={true}
+                        />
+                      </Animated.View>
+                    </View>
+                  </View>
+                  <View
+                    style={{
                       alignItems: 'center',
-                      justifyContent: 'center',
+                      marginTop: verticalScale(40),
                     }}>
                     <View
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
-                        width: horizontalScale(75),
-                        justifyContent: 'space-between',
+                        width: horizontalScale(370),
                       }}>
-                      <MaterialCommunityIcons
-                        name={'clock'}
-                        color={'#33b056'}
-                        size={22}
-                      />
-                      <Text
+                      <Image
+                        source={require('../../Assets/Images/profilepic.png')}
                         style={{
-                          fontFamily: 'Poppins-Regular',
-                          fontSize: fontScale(13.5),
-                          top: verticalScale(2),
-                        }}>
-                        10 min
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={{alignItems: 'center'}}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      width: horizontalScale(390),
-                      justifyContent: 'space-around',
-                    }}>
-                    <Animated.View style={styles.progressContainer}>
-                      <Text style={styles.progressText}>Order Placed</Text>
-                      <ProgressBar
-                        progress={10}
-                        color="#4caf50"
-                        style={styles.progressBar}
+                          width: horizontalScale(60),
+                          height: verticalScale(60),
+                        }}
                       />
-                    </Animated.View>
-                    <Animated.View style={styles.progressContainer}>
-                      <Text style={styles.progressText}>On the Way</Text>
-                      <ProgressBar
-                        progress={10}
-                        color="#4caf50"
-                        style={styles.progressBar}
-                        indeterminate
-                      />
-                    </Animated.View>
-                    <Animated.View style={styles.progressContainer}>
-                      <Text style={styles.progressText}>Delivered</Text>
-                      <ProgressBar
-                        progress={10}
-                        color="#4caf50"
-                        style={styles.progressBar}
-                        indeterminate={true}
-                      />
-                    </Animated.View>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    marginTop: verticalScale(40),
-                  }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      width: horizontalScale(370),
-                    }}>
-                    <Image
-                      source={require('../../Assets/Images/profilepic.png')}
-                      style={{
-                        width: horizontalScale(60),
-                        height: verticalScale(60),
-                      }}
-                    />
-                    <View style={{marginLeft: horizontalScale(10)}}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          width: horizontalScale(290),
-                          justifyContent: 'space-between',
-                        }}>
-                        <View>
-                          <Text
-                            style={{
-                              fontFamily: 'Poppins-Regular',
-                              fontSize: fontScale(13),
-                              color: 'grey',
-                            }}>
-                            Your Delivery Hero
-                          </Text>
-                          <Text
-                            style={{
-                              fontFamily: 'Poppins-SemiBold',
-                              fontSize: fontScale(17),
-                            }}>
-                            Muhammad Ali
-                          </Text>
-                        </View>
-                        <View style={{flexDirection: 'row', gap: horizontalScale(15)}}>
-                          <View
-                            style={{
-                              backgroundColor: '#f4f4f6',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              width: horizontalScale(45),
-                              borderRadius: 30,
-                              height: verticalScale(45),
-                            }}>
-                            <MaterialIcons
-                              name={'edit'}
-                              size={22}
-                              color={'green'}
-                            />
+                      <View style={{marginLeft: horizontalScale(10)}}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            width: horizontalScale(290),
+                            justifyContent: 'space-between',
+                          }}>
+                          <View>
+                            <Text
+                              style={{
+                                fontFamily: 'Poppins-Regular',
+                                fontSize: fontScale(13),
+                                color: 'grey',
+                              }}>
+                              Your Delivery Hero
+                            </Text>
+                            <Text
+                              style={{
+                                fontFamily: 'Poppins-SemiBold',
+                                fontSize: fontScale(17),
+                              }}>
+                              Muhammad Ali
+                            </Text>
                           </View>
                           <View
                             style={{
-                              backgroundColor: '#f4f4f6',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              width: horizontalScale(45),
-                              borderRadius: 30,
-                              height: verticalScale(45),
+                              flexDirection: 'row',
+                              gap: horizontalScale(15),
                             }}>
-                            <FontAwesome
-                              name={'phone'}
-                              size={22}
-                              color={'green'}
-                            />
+                            <View
+                              style={{
+                                backgroundColor: '#f4f4f6',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: horizontalScale(45),
+                                borderRadius: 30,
+                                height: verticalScale(45),
+                              }}>
+                              <MaterialCommunityIcons
+                                name={'message-processing'}
+                                size={22}
+                                color={'green'}
+                              />
+                            </View>
+                            <View
+                              style={{
+                                backgroundColor: '#f4f4f6',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: horizontalScale(45),
+                                borderRadius: 30,
+                                height: verticalScale(45),
+                              }}>
+                              <FontAwesome
+                                name={'phone'}
+                                size={22}
+                                color={'green'}
+                              />
+                            </View>
                           </View>
                         </View>
                       </View>
                     </View>
                   </View>
+                  <View
+                    style={{
+                      width: horizontalScale(340),
+                      alignItems: 'center',
+                      borderWidth: 0.9,
+                      borderColor: '#fbf6fb',
+                      marginTop: verticalScale(15),
+                    }}
+                  />
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      marginTop: verticalScale(20),
+                    }}>
+                    <View style={styles.deliverView}>
+                      <Text style={styles.deliverText}>Deliver to</Text>
+                      <View style={styles.mapsView}>
+                        <Image
+                          source={require('../../Assets/Images/location.png')}
+                        />
+                        {location && (
+                          <Text style={styles.mapsText}>
+                            {location.substring(0, 25)}
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                  </View>
                 </View>
-              </View>
-            </BottomSheetView>
-          </BottomSheet>
-        </View>
+              </BottomSheetView>
+            </BottomSheet>
+          </View>
+        )}
       </SafeAreaView>
     </GestureHandlerRootView>
   );
@@ -422,6 +475,24 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
     fontSize: fontScale(15),
     color: 'green',
+  },
+  deliverView: {
+    width: horizontalScale(350),
+  },
+  deliverText: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: verticalScale(14),
+    color: '#a7a7a6',
+  },
+  mapsView: {
+    flexDirection: 'row',
+    width: horizontalScale(300),
+    alignItems: 'center',
+    gap: horizontalScale(10),
+  },
+  mapsText: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: fontScale(14),
   },
 });
 
