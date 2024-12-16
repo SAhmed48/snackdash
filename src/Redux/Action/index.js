@@ -7,7 +7,8 @@ import {
   SET_MAP_DETAILS,
   SET_TOKEN,
   SET_HISTORY_DATA,
-  SET_CART
+  INCREMENT_COUNT,
+  DECREMENT_COUNT,
 } from '../../Constants/SetData';
 
 const setData = details => {
@@ -34,7 +35,7 @@ const setAddToCartData = data => {
 const removeItemCart = id => {
   return {
     type: REMOVE_ITEM_CART,
-    payload: id,
+    payload: id, // Pass the id as payload
   };
 };
 
@@ -42,6 +43,20 @@ const setItemTotal = ItemTotal => {
   return {
     type: SET_ITEM_TOTAL,
     payload: ItemTotal,
+  };
+};
+
+export const incrementCount = id => {
+  return {
+    type: INCREMENT_COUNT,
+    payload: id,
+  };
+};
+
+export const decrementCount = id => {
+  return {
+    type: DECREMENT_COUNT,
+    payload: id,
   };
 };
 
@@ -55,16 +70,16 @@ const setAuthCredential = authData => {
 const setToken = token => {
   return {
     type: SET_TOKEN,
-    payload: token
-  }
-}
+    payload: token,
+  };
+};
 
 const setHistoryData = data => {
   return {
     type: SET_HISTORY_DATA,
-    payload: data
-  }
-}
+    payload: data,
+  };
+};
 
 export {
   setData,
@@ -72,6 +87,8 @@ export {
   setAddToCartData,
   removeItemCart,
   setItemTotal,
+  incrementCount,
+  decrementCount,
   setAuthCredential,
   setToken,
   setHistoryData,

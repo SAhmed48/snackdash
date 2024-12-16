@@ -2156,7 +2156,7 @@
   dependencies:
     stacktrace-js "^2.0.2"
 
-"@react-native-firebase/database@^21.4.0":
+"@react-native-firebase/database@^21.6.1":
   version "21.6.1"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-21.6.1.tgz#048a7681d73680cade8b4ad4dc598bda889bff36"
   integrity sha512-oPh1vzpd+HySm57bLDycmuSUWDZmHOr72Fkkf9jquRzkvbDnjsRJLXIeX6rupSo1UE+9ChfIwYSOs7bRvhOuQQ==

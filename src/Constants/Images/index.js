@@ -18,6 +18,7 @@ const Images = {
   specialOffer: require('../../Assets/Images/specialoffer.png'),
   profilePic: require('../../Assets/Images/profilepic.png'),
   language: require('../../Assets/Images/language.png'),
+  emptyCart: require('../../Assets/Images/cartEmpty.png'),
 };
 
 export default Images;

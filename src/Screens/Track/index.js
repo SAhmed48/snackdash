@@ -57,7 +57,7 @@ const Track = () => {
         startAnimation(progress3);
       });
     });
-    if(routeCoordinates){
+    if (routeCoordinates) {
       fitToRoute(routeCoordinates);
     }
     setSheet(true);
@@ -218,7 +218,7 @@ const Track = () => {
               <MapboxGL.ShapeSource
                 id="routeSource"
                 shape={{
-                  type: 'GeometryCollection',
+                  type: 'Feature',
                   geometry: {type: 'LineString', coordinates: routeCoordinates},
                 }}>
                 <MapboxGL.LineLayer

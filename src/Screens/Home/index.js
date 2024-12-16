@@ -19,12 +19,13 @@ import {initializeApp} from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {setAddToCartData, setData} from '../../Redux/Action';
 import styles from './styles';
 import Images from '../../Constants/Images';
 import Feather from 'react-native-vector-icons/Feather';
 import {ImageData, data} from '../../Data/FoodCategory';
+import database from '@react-native-firebase/database';
 
 initializeApp({
   apiKey: 'AIzaSyA6JrpMneO5H2iWxO8KQCtCHXvwOWz7mOI',
@@ -36,16 +37,13 @@ initializeApp({
 Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
 
 const Home = () => {
-  const [database, setDataBase] = useState(null);
+  const [information, setInformation] = useState(null);
   const [visible, setVisible] = useState(false);
   const [firebaseData, setFireBaseData] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  const setAddToCartDetails = useSelector(
-    state => state.Reducer.setAddToCartDetails,
-  );
   React.useEffect(() => {
     getDataBase();
     const interval = 20000;
@@ -75,19 +73,26 @@ const Home = () => {
 
   const getDataBase = async () => {
     try {
-      const docId = visible ? 'b831VbyXKQ9XY1WvTKOA' : 'GNSIDLG6nUvU93WVqOrS';
-      const document = await firestore().collection('Food').doc(docId).get();
-      if (document.exists) {
-        setDataBase(document.data());
-        setFireBaseData(document.data());
-      } else {
-        console.warn(`Document with ID ${docId} does not exist.`);
-        setDataBase(null);
-        setFireBaseData(null);
+      const snapshot = await database().ref('/').once('value');
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const dataArray = Object.entries(data).map(([key, value]) => ({
+          id: key.trim(),
+          name: value,
+        }));
+        setFireBaseData(dataArray);
+        const docId = 'b831VbyXKQ9XY1WvTKOA';
+        const document = await firestore().collection('Food').doc(docId).get();
+        if (document.exists) {
+          setInformation(document.data());
+        } else {
+          console.warn(`Document with ID ${docId} does not exist.`);
+          setInformation(null);
+        }
       }
     } catch (error) {
       console.error('Error fetching database:', error);
-      setDataBase(null);
+      setInformation(null);
       setFireBaseData(null);
     }
   };
@@ -96,9 +101,17 @@ const Home = () => {
     dispatch(setData(details));
   };
 
-  const getAddToCartDetails = async (data, index) => {
+  const getAddToCartDetails = async data => {
+    const cartItem = {
+      id: data.id,
+      name: data.name,
+      price: 20,
+      count: 1,
+      timeStamp: Date.now(),
+    };
+    console.log(cartItem);
+    dispatch(setAddToCartData(cartItem));
     const foodData = {name: data, price: 20};
-    dispatch(setAddToCartData(data));
     await firestore()
       .collection('SelectedFood')
       .doc('vhrtZyT6VdlotscaYY4y')
@@ -139,7 +152,6 @@ const Home = () => {
   };
 
   const renderItem = ({item, index}) => {
-    const isAdded = setAddToCartDetails.length > 0 && setAddToCartDetails.includes(item);
     return (
       <View style={styles.topRatedFoodView}>
         <View style={styles.topRatedFoodItems} keys={index}>
@@ -147,19 +159,13 @@ const Home = () => {
             <Image source={Images.zinger} style={styles.topRatedImageStyle} />
           </View>
           <View style={styles.ratedTextView}>
-            <Text style={styles.ratedTextStyle}>{item}</Text>
+            <Text style={styles.ratedTextStyle}>{item.name}</Text>
           </View>
           <View style={styles.priceBtnSelectView}>
             <TouchableOpacity
-              style={[
-                styles.priceBtnSelectStyle,
-                isAdded && {backgroundColor: 'gray'},
-              ]}
-              onPress={() => getAddToCartDetails(item, index)}
-              disabled={isAdded}>
-              <Text style={styles.priceBtnSelectText}>
-                {isAdded ? 'Added' : '20 PKR'}
-              </Text>
+              style={[styles.priceBtnSelectStyle]}
+              onPress={() => getAddToCartDetails(item)}>
+              <Text style={styles.priceBtnSelectText}>20 PKR</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -229,9 +235,9 @@ const Home = () => {
             </View>
           </View>
           <View style={styles.foodItemsView}>
-            {database && (
+            {information && (
               <FlatList
-                data={database.FastFood}
+                data={information.FastFood}
                 renderItem={renderData}
                 numColumns={2}
                 keyExtractor={index => index.toString()}
@@ -285,11 +291,11 @@ const Home = () => {
           </View>
           <View>
             <View style={styles.foodItemsView}>
-              {firebaseData?.Food ? (
+              {firebaseData ? (
                 <FlatList
-                  data={firebaseData.Food}
+                  data={firebaseData}
                   renderItem={renderItem}
-                  keyExtractor={(_, index) => index.toString()}
+                  keyExtractor={item => item.id}
                   numColumns={3}
                 />
               ) : (

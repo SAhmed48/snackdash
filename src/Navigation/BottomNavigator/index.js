@@ -13,7 +13,6 @@ import Special from '../../Screens/SpecialOffers';
 import {useNavigation} from '@react-navigation/native';
 import AddCart from '../../Screens/AddCart';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Feather from 'react-native-vector-icons/Feather';
 import CheckOut from '../../Screens/CheckOut';
 import Card from '../../Screens/AddCard';
 import Settings from '../../Screens/Settings';
@@ -187,37 +186,7 @@ const TabNavigator = () => {
         name="Track"
         component={Track}
         options={{
-          // headerRight: () => (
-          //   <View
-          //     style={{
-          //       marginRight: 40,
-          //       alignItems: 'center',
-          //       justifyContent: 'center',
-          //       borderRadius: 30,
-          //       height: 40,
-          //       width: 40,
-          //       backgroundColor: 'white',
-          //     }}>
-          //     <Feather name={'bell'} size={23} color={'grey'} />
-          //   </View>
-          // ),
-          // headerLeft: () => (
-          //   <View style={{marginLeft: 25}}>
-          //     <Pressable
-          //       onPress={() => navigation.navigate('Home')}
-          //       style={styles.arrowBtnStyle}>
-          //       <Image
-          //         source={require('../../Assets/Images/right-arrow.png')}
-          //         style={styles.arrowImageStyle}
-          //       />
-          //     </Pressable>
-          //   </View>
-          // ),
-          // headerTitle: 'My Location',
-          // headerTitleStyle: {
-          //   fontFamily: 'Poppins-Medium',
-          // },
-          // headerTransparent: true,
+          
           tabBarIcon: ({focused}) => (
             <MaterialIcons
               name="track-changes"

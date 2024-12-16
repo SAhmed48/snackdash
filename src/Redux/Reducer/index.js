@@ -8,7 +8,8 @@ import {
   SET_AUTH_CREDENTIAL,
   SET_TOKEN,
   SET_HISTORY_DATA,
-  SET_CART,
+  INCREMENT_COUNT,
+  DECREMENT_COUNT,
   MARK_VIEWED_ITEM,
 } from '../../Constants/SetData';
 
@@ -21,8 +22,8 @@ const initialData = {
   userData: null,
   userToken: '',
   historyData: [],
-  currentCartIndex: 0, // Tracks which item is being viewed
-  cartViewed: false, 
+  currentCartIndex: 0,
+  cartViewed: false,
 };
 
 const Reducer = (state = initialData, action) => {
@@ -39,69 +40,100 @@ const Reducer = (state = initialData, action) => {
       };
     case SET_ADD_TO_CART_DETAILS: {
       const {id, countChange} = action.payload;
-      const exists = state.setAddToCartDetails.some(item => item.id === id);
-      return exists
-        ? {
+      if (countChange !== undefined) {
+        return {
+          ...state,
+          setAddToCartDetails: state.setAddToCartDetails.map(item =>
+            item.id === id
+              ? {
+                  ...item,
+                  count: item.count + countChange,
+                  timestamp: Date.now(),
+                }
+              : item,
+          ),
+        };
+      } else {
+        const newItem = action.payload;
+        const existingItem = state.setAddToCartDetails.find(
+          item => item.id === newItem.id,
+        );
+
+        if (existingItem) {
+          return {
             ...state,
             setAddToCartDetails: state.setAddToCartDetails.map(item =>
-              item.id === id
-                ? {
-                    ...item,
-                    count: Math.max(0, item.count + (countChange || 1)),
-                  }
+              item.id === newItem.id
+                ? {...item, count: item.count + 1, timestamp: Date.now()}
                 : item,
             ),
-          }
-        : {
-            ...state,
-            setAddToCartDetails: [
-              ...state.setAddToCartDetails,
-              {
-                id: action.payload,
-                name: action.payload,
-                count: 1,
-                price: 20,
-                timestamp: Date.now(),
-              },
-            ],
           };
+        } else {
+          return {
+            ...state,
+            setAddToCartDetails: [...state.setAddToCartDetails, newItem],
+          };
+        }
+      }
     }
-    case REMOVE_ITEM_CART:
+    case REMOVE_ITEM_CART: {
+      const idToRemove = action.payload;
       return {
         ...state,
         setAddToCartDetails: state.setAddToCartDetails.filter(
-          item => item.id !== action.payload,
+          item => item.id !== idToRemove,
         ),
       };
+    }
     case SET_ITEM_TOTAL:
       return {
         ...state,
-        itemTotal: action.payload,
+        itemTotal: action.payload
       };
+    case INCREMENT_COUNT: {
+      const idToIncrement = action.payload;
+      return {
+        ...state,
+        setAddToCartDetails: state.setAddToCartDetails.map(item =>
+          item.id === idToIncrement
+            ? {...item, count: item.count + 1, timestamp: Date.now()}
+            : item,
+        ),
+      };
+    }
+    case DECREMENT_COUNT: {
+      const idToDecrement = action.payload;
+      return {
+        ...state,
+        setAddToCartDetails: state.setAddToCartDetails
+          .map(item =>
+            item.id === idToDecrement
+              ? {...item, count: item.count - 1, timestamp: Date.now()}
+              : item,
+          )
+      };
+    }
     case SET_AUTH_CREDENTIAL:
       return {
         ...state,
         authData: action.payload,
       };
     case SET_TOKEN:
-      // AsyncStorage.setItem('userToken', action.payload).then(token =>
-      //   console.log(token),
-      // ).catch(err => console.log(err));
       return {
         ...state,
         userToken: action.payload,
       };
-      case SET_HISTORY_DATA: 
+    case SET_HISTORY_DATA:
       return {
-        ...state, 
-        historyData: [...state.historyData, action.payload]
-      }
-      case MARK_VIEWED_ITEM:
+        ...state,
+        historyData: [...state.historyData, action.payload],
+      };
+    case MARK_VIEWED_ITEM:
       return {
         ...state,
         cartViewed: true,
         currentCartIndex: 0,
-      }
+      };
     default:
       return state;
   }

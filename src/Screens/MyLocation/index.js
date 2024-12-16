@@ -11,19 +11,18 @@ import Geocoder from 'react-native-geocoding';
 import Geolocation from '@react-native-community/geolocation';
 import MapboxGL from '@rnmapbox/maps';
 import Octicons from 'react-native-vector-icons/Octicons';
-import {fontScale, horizontalScale, verticalScale} from '../../Utils/ScaleSize';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import 'react-native-get-random-values';
 import Feather from 'react-native-vector-icons/Feather';
 import Config from 'react-native-config';
+import styles from './styles';
 
 const MapBoxToken = Config.MAPBOX_TOKEN;
-const GoogleMapApi = Config.GOOGLE_MAP_API2
+const GoogleMapApi = Config.GOOGLE_MAP_API2;
 
-MapboxGL.setAccessToken(MapBoxToken)
+MapboxGL.setAccessToken(MapBoxToken);
 MapboxGL.setTelemetryEnabled(false);
 Geocoder.init(GoogleMapApi);
-
 
 const MyLocation = () => {
   const [location, setLocation] = useState('');
@@ -80,13 +79,7 @@ const MyLocation = () => {
             coordinate={coordinates}
           />
         </MapboxGL.MapView>
-        <View
-          style={{
-            alignItems: 'center',
-            marginTop: verticalScale(40),
-            zIndex: 1,
-            flex: 1,
-          }}>
+        <View style={styles.googlePlacesView}>
           <GooglePlacesAutocomplete
             placeholder="Find Your Location"
             fetchDetails={true}
@@ -108,78 +101,24 @@ const MyLocation = () => {
               console.log(details.location);
             }}
           />
-          <View
-            style={{
-              position: 'absolute',
-              left: horizontalScale(65),
-              top: verticalScale(8),
-            }}>
+          <View style={styles.searchIcon}>
             <Feather name={'search'} size={25} color={'#31af54'} />
           </View>
         </View>
-        <View
-          style={{
-            alignItems: 'center',
-            flex: 1,
-            justifyContent: 'flex-end',
-            bottom: verticalScale(40),
-          }}>
-          <View
-            style={{
-              width: horizontalScale(360),
-              height: verticalScale(180),
-              backgroundColor: 'white',
-              borderRadius: 15,
-              elevation: 10,
-            }}>
-            <View
-              style={{
-                marginLeft: horizontalScale(15),
-                marginTop: verticalScale(20),
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Regular',
-                  color: 'grey',
-                  fontSize: fontScale(13),
-                }}>
-                Your Location
-              </Text>
+        <View style={styles.locationView}>
+          <View style={styles.locationInsideView}>
+            <View style={styles.locationTextView}>
+              <Text style={styles.locationTextStyle}>Your Location</Text>
             </View>
-            <View style={{marginLeft: 20, marginTop: 8}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  width: horizontalScale(320),
-                  gap: horizontalScale(20),
-                  flexWrap: 'wrap',
-                }}>
+            <View style={styles.locationIconView}>
+              <View style={styles.locationTextIconView}>
                 <Octicons name={'location'} size={25} color={'green'} />
-                <Text
-                  style={{
-                    width: 260,
-                    fontFamily: 'Poppins-Medium',
-                    color: 'black',
-                    fontSize: fontScale(13),
-                  }}>
-                  {location}
-                </Text>
+                <Text style={styles.locationText}>{location}</Text>
               </View>
             </View>
-            <View style={{alignItems: 'center', marginTop: 20}}>
-              <TouchableOpacity
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#33b056',
-                  width: horizontalScale(270),
-                  height: verticalScale(40),
-                  borderRadius: 14,
-                }}>
-                <Text style={{fontFamily: 'Poppins-Medium', color: 'white'}}>
-                  Set Location
-                </Text>
+            <View style={styles.btnView}>
+              <TouchableOpacity style={styles.btnStyle}>
+                <Text style={styles.btnText}>Set Location</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -188,41 +127,5 @@ const MyLocation = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  topView: {
-    width: '100%',
-    height: verticalScale(65),
-    backgroundColor: '#f6f6f6',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    shadowColor: 'black',
-  },
-  mapContainer: {
-    flex: 1,
-  },
-  addressContainer: {
-    width: horizontalScale(350),
-  },
-  inputText: {
-    paddingVertical: 10,
-    paddingHorizontal: horizontalScale(70),
-    fontFamily: 'Poppins-Regular',
-    fontSize: fontScale(15),
-    lineHeight: fontScale(18), // Ensure consistent spacing
-    backgroundColor: 'white',
-    color: 'black',
-    width: horizontalScale(330),
-    height: verticalScale(45),
-    borderRadius: 30,
-    elevation: 10,
-    textAlignVertical: 'center', // Center aligns text vertically
-    includeFontPadding: false, //
-  },
-});
 
 export default MyLocation;

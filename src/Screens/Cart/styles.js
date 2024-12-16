@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { fontScale, horizontalScale, verticalScale } from "../../Utils/ScaleSize";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fdfffe',
@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
     },
     foodNameStyle: {
       fontFamily: 'Poppins-Medium',
-      fontSize: 15,
+      fontSize: fontScale(15),
     },
     foodBurger: {
       fontFamily: 'Poppins-Medium',
@@ -208,3 +208,5 @@ export const styles = StyleSheet.create({
       fontSize: fontScale(15),
     },
   });
+
+  export default styles;
