@@ -19,6 +19,8 @@ const Images = {
   profilePic: require('../../Assets/Images/profilepic.png'),
   language: require('../../Assets/Images/language.png'),
   emptyCart: require('../../Assets/Images/cartEmpty.png'),
+  miniZing: require('../../Assets/Images/miniZing.png'),
+  location: require('../../Assets/Images/location.png'),
 };
 
 export default Images;

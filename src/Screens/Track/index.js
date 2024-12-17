@@ -13,19 +13,19 @@ import Geolocation from '@react-native-community/geolocation';
 import MapboxGL from '@rnmapbox/maps';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
-import Config from 'react-native-config';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
-import {horizontalScale, fontScale, verticalScale} from '../../Utils/ScaleSize';
+import {horizontalScale} from '../../Utils/ScaleSize';
 import {ProgressBar} from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Images from '../../Constants/Images';
+import styles from './styles';
 
-const MapBoxToken = Config.MAPBOX_TOKEN;
-const GoogleMapApi = Config.GOOGLE_MAP_API2;
-
-MapboxGL.setAccessToken(MapBoxToken);
+MapboxGL.setAccessToken(
+  'sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q',
+);
 MapboxGL.setTelemetryEnabled(false);
-Geocoder.init(GoogleMapApi);
+Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
 
 const Track = () => {
   const [location, setLocation] = useState('');
@@ -138,7 +138,7 @@ const Track = () => {
   const getRoute = useCallback(async (origin, destination) => {
     try {
       const response = await axios.get(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${origin[0]},${origin[1]};${destination[0]},${destination[1]}?geometries=geojson&access_token=${MapBoxToken}`,
+        `https://api.mapbox.com/directions/v5/mapbox/driving/${origin[0]},${origin[1]};${destination[0]},${destination[1]}?geometries=geojson&access_token=sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q`,
       );
       if (response.status !== 200) {
         console.error(
@@ -240,60 +240,21 @@ const Track = () => {
               snapPoints={snapPoints}>
               <BottomSheetView style={{flex: 1}}>
                 <View style={{alignItems: 'center'}}>
-                  <View
-                    style={{
-                      width: horizontalScale(380),
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      flexWrap: 'wrap',
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: fontScale(20),
-                        fontFamily: 'Poppins-Bold',
-                      }}>
-                      On the Way
-                    </Text>
-                    <View
-                      style={{
-                        width: horizontalScale(100),
-                        height: verticalScale(40),
-                        borderRadius: 30,
-                        borderWidth: 1,
-                        borderColor: '#faf4fa',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          width: horizontalScale(75),
-                          justifyContent: 'space-between',
-                        }}>
+                  <View style={styles.bottomSheetView}>
+                    <Text style={styles.onWayText}>On the Way</Text>
+                    <View style={styles.timeDeliverView}>
+                      <View style={styles.timeDeliverFlex}>
                         <MaterialCommunityIcons
                           name={'clock'}
                           color={'#33b056'}
                           size={22}
                         />
-                        <Text
-                          style={{
-                            fontFamily: 'Poppins-Regular',
-                            fontSize: fontScale(13.5),
-                            top: verticalScale(2),
-                          }}>
-                          10 min
-                        </Text>
+                        <Text style={styles.minTextStyle}>10 min</Text>
                       </View>
                     </View>
                   </View>
                   <View style={{alignItems: 'center'}}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        width: horizontalScale(390),
-                        justifyContent: 'space-around',
-                      }}>
+                    <View style={styles.progressView}>
                       <Animated.View style={styles.progressContainer}>
                         <Text style={styles.progressText}>Order Placed</Text>
                         <ProgressBar
@@ -322,77 +283,31 @@ const Track = () => {
                       </Animated.View>
                     </View>
                   </View>
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      marginTop: verticalScale(40),
-                    }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        width: horizontalScale(370),
-                      }}>
+                  <View style={styles.riderView}>
+                    <View style={styles.riderFlexView}>
                       <Image
-                        source={require('../../Assets/Images/profilepic.png')}
-                        style={{
-                          width: horizontalScale(60),
-                          height: verticalScale(60),
-                        }}
+                        source={Images.profilePic}
+                        style={styles.profilePicStyle}
                       />
                       <View style={{marginLeft: horizontalScale(10)}}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            width: horizontalScale(290),
-                            justifyContent: 'space-between',
-                          }}>
+                        <View style={styles.deliveryViewStyle}>
                           <View>
-                            <Text
-                              style={{
-                                fontFamily: 'Poppins-Regular',
-                                fontSize: fontScale(13),
-                                color: 'grey',
-                              }}>
+                            <Text style={styles.deliveryText}>
                               Your Delivery Hero
                             </Text>
-                            <Text
-                              style={{
-                                fontFamily: 'Poppins-SemiBold',
-                                fontSize: fontScale(17),
-                              }}>
+                            <Text style={styles.riderNameText}>
                               Muhammad Ali
                             </Text>
                           </View>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              gap: horizontalScale(15),
-                            }}>
-                            <View
-                              style={{
-                                backgroundColor: '#f4f4f6',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: horizontalScale(45),
-                                borderRadius: 30,
-                                height: verticalScale(45),
-                              }}>
+                          <View style={styles.contactViewFlex}>
+                            <View style={styles.messageIconView}>
                               <MaterialCommunityIcons
                                 name={'message-processing'}
                                 size={22}
                                 color={'green'}
                               />
                             </View>
-                            <View
-                              style={{
-                                backgroundColor: '#f4f4f6',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: horizontalScale(45),
-                                borderRadius: 30,
-                                height: verticalScale(45),
-                              }}>
+                            <View style={styles.messageIconView}>
                               <FontAwesome
                                 name={'phone'}
                                 size={22}
@@ -404,26 +319,12 @@ const Track = () => {
                       </View>
                     </View>
                   </View>
-                  <View
-                    style={{
-                      width: horizontalScale(340),
-                      alignItems: 'center',
-                      borderWidth: 0.9,
-                      borderColor: '#fbf6fb',
-                      marginTop: verticalScale(15),
-                    }}
-                  />
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      marginTop: verticalScale(20),
-                    }}>
+                  <View style={styles.itemSeparator} />
+                  <View style={styles.addressView}>
                     <View style={styles.deliverView}>
                       <Text style={styles.deliverText}>Deliver to</Text>
                       <View style={styles.mapsView}>
-                        <Image
-                          source={require('../../Assets/Images/location.png')}
-                        />
+                        <Image source={Images.location} />
                         {location && (
                           <Text style={styles.mapsText}>
                             {location.substring(0, 25)}
@@ -441,59 +342,5 @@ const Track = () => {
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  flexContainer: {
-    flex: 1,
-  },
-  mapContainer: {
-    flex: 1,
-  },
-  bottomSheetStyle: {
-    borderRadius: 30,
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 10,
-  },
-  progressContainer: {
-    marginTop: verticalScale(20),
-    width: horizontalScale(110),
-  },
-  progressBar: {
-    height: verticalScale(5),
-    borderRadius: 5,
-    marginTop: verticalScale(8),
-  },
-  progressText: {
-    textAlign: 'center',
-    fontFamily: 'Poppins-Regular',
-    fontSize: fontScale(15),
-    color: 'green',
-  },
-  deliverView: {
-    width: horizontalScale(350),
-  },
-  deliverText: {
-    fontFamily: 'Poppins-Regular',
-    fontSize: verticalScale(14),
-    color: '#a7a7a6',
-  },
-  mapsView: {
-    flexDirection: 'row',
-    width: horizontalScale(300),
-    alignItems: 'center',
-    gap: horizontalScale(10),
-  },
-  mapsText: {
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: fontScale(14),
-  },
-});
 
 export default Track;

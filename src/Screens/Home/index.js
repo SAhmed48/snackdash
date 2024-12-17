@@ -10,7 +10,6 @@ import {
   FlatList,
   Pressable,
   ToastAndroid,
-  DeviceEventEmitter,
   ActivityIndicator,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
@@ -54,7 +53,7 @@ const Home = () => {
     return () => {
       clearInterval(autoPlay);
     };
-  }, [visible, firebaseData, currentIndex]);
+  }, []);
 
   const fadeOutAndIn = () => {
     Animated.sequence([
@@ -123,7 +122,6 @@ const Home = () => {
       );
 
     ToastAndroid.show('Item Added to Cart', ToastAndroid.SHORT);
-    DeviceEventEmitter.emit('cart', index);
   };
 
   const renderData = ({item, index}) => {
@@ -310,4 +308,5 @@ const Home = () => {
     </SafeAreaView>
   );
 };
+
 export default Home;

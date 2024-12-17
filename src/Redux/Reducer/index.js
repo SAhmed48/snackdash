@@ -1,4 +1,3 @@
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   SET_ADD_TO_CART_DETAILS,
   SET_FAVORITE_DETAILS,

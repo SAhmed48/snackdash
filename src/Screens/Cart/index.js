@@ -21,7 +21,6 @@ import {
   incrementCount,
   decrementCount,
 } from '../../Redux/Action';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import Images from '../../Constants/Images';
 
@@ -38,12 +37,6 @@ const Cart = () => {
 
   React.useEffect(() => {
     calculateTotalPrice();
-    const getItems = async () => {
-      await AsyncStorage.getItem('cart').then(value => {
-        console.log(value);
-      });
-    };
-    getItems();
   }, [setAddToCartDetails]);
 
   useFocusEffect(

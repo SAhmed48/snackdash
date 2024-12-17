@@ -5,7 +5,6 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-  DeviceEventEmitter,
   ToastAndroid,
 } from 'react-native';
 import {verticalScale, horizontalScale, fontScale} from '../../Utils/ScaleSize';
@@ -32,15 +31,6 @@ const Header = () => {
   React.useEffect(() => {
     getLocationUser();
     setLocalCart(setAddToCartDetails);
-    const cartListener = DeviceEventEmitter.addListener('cart', index => {
-      setLocalCart(prevState => {
-        if (!prevState.includes(index)) {
-          return [...prevState, index];
-        }
-        return prevState;
-      });
-    });
-    return () => cartListener.remove();
   }, [setAddToCartDetails]);
 
   const getLocationUser = async () => {
