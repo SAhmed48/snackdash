@@ -14,6 +14,7 @@ project.ext.react = [
  * By default you don't need to apply any configuration, just uncomment the lines you need.
  */
 react {
+        hermesFlags = ["-O", "-output-source-map"]
     /* Folders */
     //   The root of your project, i.e. where "package.json" lives. Default is '../..'
     // root = file("../../")

@@ -28,19 +28,19 @@ const TabNavigator = () => {
   const setAddToCartDetails = useSelector(
     state => state.Reducer.setAddToCartDetails,
   );
-  const getHeader = routeName => {
-    if (['Home', 'Profile', 'Cart', 'Track'].includes(routeName)) {
-      return () => <Header />;
-    }
-    return undefined;
-  };
+  // const getHeader = routeName => {
+  //   if (['Home', 'Profile', 'Cart', 'Track'].includes(routeName)) {
+  //     return () => <Header />;
+  //   }
+  //   return undefined;
+  // };
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarHideOnKeyboard: true,
         tabBarActiveBackgroundColor: 'white',
         headerShown: true,
-        header: getHeader(route.name), // Pass the result of the function
+        // header: getHeader(route.name), // Pass the result of the function
         tabBarStyle: {
           height: verticalScale(70),
           display:
@@ -67,6 +67,7 @@ const TabNavigator = () => {
         component={Home}
         options={{
           tabBarLabelPosition: 'below-icon',
+          header: () => <Header />,
           tabBarIcon: ({focused}) => (
             <View style={{alignItems: 'center'}}>
               <Entypo
@@ -127,6 +128,7 @@ const TabNavigator = () => {
         component={AddCart}
         options={{
           headerShown: true,
+          header: () => <Header />,
           tabBarLabel: '',
           tabBarIcon: ({focused}) => (
             <View
@@ -186,7 +188,6 @@ const TabNavigator = () => {
         name="Track"
         component={Track}
         options={{
-          
           tabBarIcon: ({focused}) => (
             <MaterialIcons
               name="track-changes"
@@ -201,6 +202,7 @@ const TabNavigator = () => {
         component={UserProfile}
         options={{
           headerShown: true,
+          header: () => <Header />,
           tabBarIcon: ({focused}) => (
             <MaterialCommunityIcons
               name="account"

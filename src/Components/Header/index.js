@@ -1,37 +1,31 @@
+import {useSelector, useDispatch} from 'react-redux';
 import {
+  StyleSheet,
   View,
   Text,
-  StyleSheet,
-  Image,
   TouchableOpacity,
   Modal,
-  ToastAndroid,
+  Image,
 } from 'react-native';
-import {verticalScale, horizontalScale, fontScale} from '../../Utils/ScaleSize';
-import Feather from 'react-native-vector-icons/Feather';
-import React from 'react';
-import Geocoder from 'react-native-geocoding';
 import Geolocation from '@react-native-community/geolocation';
-import {useDispatch, useSelector} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {setMapData} from '../../Redux/Action';
+import Geocoder from 'react-native-geocoding';
+import { verticalScale, horizontalScale, fontScale } from '../../Utils/ScaleSize';
+import React from 'react';
+import Feather from 'react-native-vector-icons/Feather';
+import { emptyCart } from '../../Redux/Action';
 
 const Header = () => {
   const [expanded, setExpanded] = React.useState(false);
   const [location, setLocation] = React.useState('');
   const [showModal, setShowModal] = React.useState(false);
   const [currentCartIndex, setCurrentCartIndex] = React.useState(0);
-  const [localCart, setLocalCart] = React.useState([]);
 
-  const setAddToCartDetails = useSelector(
-    state => state.Reducer.setAddToCartDetails,
-  );
+  const cartItems = useSelector(state => state.Reducer.cartItems);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     getLocationUser();
-    setLocalCart(setAddToCartDetails);
-  }, [setAddToCartDetails]);
+  }, []);
 
   const getLocationUser = async () => {
     try {
@@ -60,22 +54,22 @@ const Header = () => {
   };
 
   const handleBellPress = React.useCallback(() => {
-    if (localCart.length > 0) {
+    if (cartItems.length > 0) {
       setShowModal(true);
     } else {
       ToastAndroid.show('Cart is empty!', ToastAndroid.SHORT);
     }
-  }, [localCart]);
+  }, [cartItems]);
 
   const closeModal = React.useCallback(() => {
-    if (currentCartIndex < localCart.length - 1) {
+    if (currentCartIndex < cartItems.length - 1) {
       setCurrentCartIndex(prev => prev + 1);
     } else {
       setShowModal(false);
       setCurrentCartIndex(0);
-      setLocalCart([]);
+      dispatch(emptyCart());
     }
-  }, [currentCartIndex, localCart]);
+  }, [currentCartIndex, cartItems, dispatch]);
 
   return (
     <>
@@ -98,7 +92,7 @@ const Header = () => {
           style={styles.bellIconStyle}
           onPress={handleBellPress}>
           <Feather name={'bell'} size={23} color={'grey'} />
-          {localCart.length > 0 ? (
+          {cartItems.length > 0 ? (
             <View style={styles.notificationDot} />
           ) : null}
         </TouchableOpacity>
@@ -107,12 +101,12 @@ const Header = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>
-              {localCart[currentCartIndex]?.name ||
+              {cartItems[currentCartIndex]?.name ||
                 'You have Viewed all your items'}
             </Text>
             <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
               <Text style={styles.closeButtonText}>
-                {currentCartIndex < localCart.length - 1 ? 'Next' : 'Close'}
+                {currentCartIndex < cartItems.length - 1 ? 'Next' : 'Close'}
               </Text>
             </TouchableOpacity>
           </View>

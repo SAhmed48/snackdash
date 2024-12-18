@@ -19,7 +19,7 @@ import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {useDispatch} from 'react-redux';
-import {setAddToCartData, setData} from '../../Redux/Action';
+import {setAddToCartData, setData, setItemCart} from '../../Redux/Action';
 import styles from './styles';
 import Images from '../../Constants/Images';
 import Feather from 'react-native-vector-icons/Feather';
@@ -110,6 +110,7 @@ const Home = () => {
     };
     console.log(cartItem);
     dispatch(setAddToCartData(cartItem));
+    dispatch(setItemCart(cartItem));
     const foodData = {name: data, price: 20};
     await firestore()
       .collection('SelectedFood')

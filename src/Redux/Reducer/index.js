@@ -9,7 +9,8 @@ import {
   SET_HISTORY_DATA,
   INCREMENT_COUNT,
   DECREMENT_COUNT,
-  MARK_VIEWED_ITEM,
+  SET_ITEM_CART,
+  EMPTY_CART,
 } from '../../Constants/SetData';
 
 const initialData = {
@@ -21,8 +22,8 @@ const initialData = {
   userData: null,
   userToken: '',
   historyData: [],
+  cartItems: [],
   currentCartIndex: 0,
-  cartViewed: false,
 };
 
 const Reducer = (state = initialData, action) => {
@@ -87,7 +88,7 @@ const Reducer = (state = initialData, action) => {
     case SET_ITEM_TOTAL:
       return {
         ...state,
-        itemTotal: action.payload
+        itemTotal: action.payload,
       };
     case INCREMENT_COUNT: {
       const idToIncrement = action.payload;
@@ -104,12 +105,11 @@ const Reducer = (state = initialData, action) => {
       const idToDecrement = action.payload;
       return {
         ...state,
-        setAddToCartDetails: state.setAddToCartDetails
-          .map(item =>
-            item.id === idToDecrement
-              ? {...item, count: item.count - 1, timestamp: Date.now()}
-              : item,
-          )
+        setAddToCartDetails: state.setAddToCartDetails.map(item =>
+          item.id === idToDecrement
+            ? {...item, count: item.count - 1, timestamp: Date.now()}
+            : item,
+        ),
       };
     }
     case SET_AUTH_CREDENTIAL:
@@ -127,11 +127,15 @@ const Reducer = (state = initialData, action) => {
         ...state,
         historyData: [...state.historyData, action.payload],
       };
-    case MARK_VIEWED_ITEM:
+    case SET_ITEM_CART:
       return {
         ...state,
-        cartViewed: true,
-        currentCartIndex: 0,
+        cartItems: [...state.cartItems, action.payload],
+      };
+    case EMPTY_CART:
+      return {
+        ...state,
+        cartItems: [],
       };
     default:
       return state;

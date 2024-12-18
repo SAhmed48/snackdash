@@ -41,44 +41,6 @@ const Track = () => {
   const progress2 = useRef(new Animated.Value(0)).current;
   const progress3 = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    getAddress();
-    if (coordinates[0] !== 0 && riderCoordinates[0] !== 0) {
-      calculateDistance(
-        coordinates[1],
-        coordinates[0],
-        riderCoordinates[1],
-        riderCoordinates[0],
-      );
-      getRoute(coordinates, riderCoordinates);
-    }
-    startAnimation(progress1, () => {
-      startAnimation(progress2, () => {
-        startAnimation(progress3);
-      });
-    });
-    if (routeCoordinates) {
-      fitToRoute(routeCoordinates);
-    }
-    setSheet(true);
-  }, [coordinates, riderCoordinates, routeCoordinates]);
-
-  const startAnimation = (progress, onComplete) => {
-    if (isNaN(progress._value)) {
-      console.error('Invalid progress value:', progress._value);
-      return;
-    }
-    Animated.timing(progress, {
-      toValue: 1,
-      duration: 3000,
-      useNativeDriver: false,
-    }).start(() => {
-      if (onComplete) {
-        onComplete();
-      }
-    });
-  };
-
   const getAddress = useCallback(() => {
     Geolocation.getCurrentPosition(
       position => {
@@ -116,6 +78,47 @@ const Track = () => {
     );
   }, []);
 
+  const getRoute = useCallback(async (origin, destination) => {
+    try {
+      const response = await axios.get(
+        `https://api.mapbox.com/directions/v5/mapbox/driving/${origin[0]},${origin[1]};${destination[0]},${destination[1]}?geometries=geojson&access_token=sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q`,
+      );
+      const data = response.data; // Axios auto-parses JSON
+      const coordinates = data.routes[0]?.geometry.coordinates || [];
+      if (coordinates.length === 0) {
+        console.error('No coordinates in the route');
+        return;
+      }
+      setRouteCoordinates(coordinates);
+    } catch (error) {
+      console.error(
+        'Error fetching route:',
+        error?.response?.data || error.message,
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    getAddress();
+    setSheet(true);
+  }, [getAddress]);
+
+  useEffect(() => {
+    if (
+      coordinates[0] !== 0 &&
+      riderCoordinates[0] !== 0 &&
+      coordinates !== riderCoordinates
+    ) {
+      calculateDistance(
+        coordinates[1],
+        coordinates[0],
+        riderCoordinates[1],
+        riderCoordinates[0],
+      );
+      getRoute(coordinates, riderCoordinates);
+    }
+  }, [coordinates, riderCoordinates, getRoute]);
+
   const fitToRoute = routeCoords => {
     const lats = routeCoords.map(coord => coord[1]);
     const lngs = routeCoords.map(coord => coord[0]);
@@ -135,37 +138,25 @@ const Track = () => {
     });
   };
 
-  const getRoute = useCallback(async (origin, destination) => {
-    try {
-      const response = await axios.get(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${origin[0]},${origin[1]};${destination[0]},${destination[1]}?geometries=geojson&access_token=sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q`,
-      );
-      if (response.status !== 200) {
-        console.error(
-          'Failed to fetch route:',
-          response.status,
-          response.statusText,
-        );
-        return;
-      }
-      const data = response.data; // Axios auto-parses JSON
-      if (!data.routes || data.routes.length === 0) {
-        console.error('No routes found in response');
-        return;
-      }
-      const coordinates = data.routes[0]?.geometry.coordinates || [];
-      if (coordinates.length === 0) {
-        console.error('No coordinates in the route');
-        return;
-      }
-      setRouteCoordinates(coordinates); // Simply set the route coordinates to render
-    } catch (error) {
-      console.error(
-        'Error fetching route:',
-        error?.response?.data || error.message,
-      );
+  useEffect(() => {
+    if (routeCoordinates) {
+      fitToRoute(routeCoordinates);
     }
+  }, [routeCoordinates, fitToRoute]);
+
+  const startAnimation = useCallback((progress, onComplete) => {
+    Animated.timing(progress, {
+      toValue: 1,
+      duration: 3000,
+      useNativeDriver: false,
+    }).start(onComplete);
   }, []);
+
+  useEffect(() => {
+    startAnimation(progress1, () =>
+      startAnimation(progress2, () => startAnimation(progress3)),
+    );
+  }, [startAnimation, progress1, progress2, progress3]);
 
   const calculateDistance = useCallback((lat1, lon1, lat2, lon2) => {
     if (isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
