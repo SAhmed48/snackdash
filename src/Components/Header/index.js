@@ -12,7 +12,8 @@ import Geocoder from 'react-native-geocoding';
 import { verticalScale, horizontalScale, fontScale } from '../../Utils/ScaleSize';
 import React from 'react';
 import Feather from 'react-native-vector-icons/Feather';
-import { emptyCart } from '../../Redux/Action';
+import { emptyCart, setMapData } from '../../Redux/Action';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Header = () => {
   const [expanded, setExpanded] = React.useState(false);

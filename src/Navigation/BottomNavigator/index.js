@@ -188,6 +188,8 @@ const TabNavigator = () => {
         name="Track"
         component={Track}
         options={{
+          headerShown: true,
+          header: () => <Header />,
           tabBarIcon: ({focused}) => (
             <MaterialIcons
               name="track-changes"

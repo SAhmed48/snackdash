@@ -21,10 +21,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Images from '../../Constants/Images';
 import styles from './styles';
 
-MapboxGL.setAccessToken(
-);
+MapboxGL.setAccessToken('');
 MapboxGL.setTelemetryEnabled(false);
-Geocoder.init();
+Geocoder.init('');
 
 const Track = () => {
   const [location, setLocation] = useState('');
@@ -98,9 +97,13 @@ const Track = () => {
   }, []);
 
   useEffect(() => {
-    getAddress();
-    setSheet(true);
+    getAddress();    
   }, [getAddress]);
+
+  useEffect(() => {
+    setSheet(true);
+  }, [sheet]);
+  
 
   useEffect(() => {
     if (
