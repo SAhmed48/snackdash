@@ -33,7 +33,7 @@ initializeApp({
   appId: '1:1043161679400:android:6dc15daf753902fba0171d',
 });
 
-Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
+Geocoder.init('');
 
 const Home = () => {
   const [information, setInformation] = useState(null);
