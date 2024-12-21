@@ -11,6 +11,8 @@ import {
   Pressable,
   ToastAndroid,
   ActivityIndicator,
+  Button,
+  PermissionsAndroid
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import Geocoder from 'react-native-geocoding';
@@ -25,6 +27,7 @@ import Images from '../../Constants/Images';
 import Feather from 'react-native-vector-icons/Feather';
 import {ImageData, data} from '../../Data/FoodCategory';
 import database from '@react-native-firebase/database';
+import {useVoiceNavigation} from 'react-native-voice-command';
 
 initializeApp({
   apiKey: 'AIzaSyA6JrpMneO5H2iWxO8KQCtCHXvwOWz7mOI',
@@ -54,6 +57,34 @@ const Home = () => {
       clearInterval(autoPlay);
     };
   }, []);
+
+  const commandsMap = {
+    'go to profile': () => navigation.navigate('Profile'),
+  };
+
+  const getPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        {
+          title: 'Record Audio',
+          message: 'App needs access to your voice',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const {startListening} = useVoiceNavigation(commandsMap);
+        startListening();
+        console.log('Voice Activated');
+      } else {
+        console.log('Voice Denied');
+      }
+    } catch (error) {
+      
+    }
+  }
 
   const fadeOutAndIn = () => {
     Animated.sequence([
@@ -175,6 +206,7 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#f6f6f6'} barStyle={'dark-content'} />
+      <Button title="Start Voice" onPress={getPermission} />
       <View style={styles.inputFilterView}>
         <View style={styles.inputFilterInsideView}>
           <TextInput placeholder="Search food" style={styles.inputTextStyle} />

@@ -148,6 +148,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation project(':react-native-vector-icons')
+
     if (project.ext.react.enableHermes) {
         implementation("com.facebook.react:hermes-android")
     } else {
