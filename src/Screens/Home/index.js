@@ -12,7 +12,6 @@ import {
   ToastAndroid,
   ActivityIndicator,
   Button,
-  PermissionsAndroid
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import Geocoder from 'react-native-geocoding';
@@ -36,7 +35,7 @@ initializeApp({
   appId: '1:1043161679400:android:6dc15daf753902fba0171d',
 });
 
-Geocoder.init('');
+Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
 
 const Home = () => {
   const [information, setInformation] = useState(null);
@@ -57,34 +56,6 @@ const Home = () => {
       clearInterval(autoPlay);
     };
   }, []);
-
-  const commandsMap = {
-    'go to profile': () => navigation.navigate('Profile'),
-  };
-
-  const getPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        {
-          title: 'Record Audio',
-          message: 'App needs access to your voice',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        const {startListening} = useVoiceNavigation(commandsMap);
-        startListening();
-        console.log('Voice Activated');
-      } else {
-        console.log('Voice Denied');
-      }
-    } catch (error) {
-      
-    }
-  }
 
   const fadeOutAndIn = () => {
     Animated.sequence([
@@ -156,6 +127,12 @@ const Home = () => {
     ToastAndroid.show('Item Added to Cart', ToastAndroid.SHORT);
   };
 
+  const commandsMap = {
+    'go to profile': navigation => navigation.navigate('Profile'),
+  };
+
+  const {startListening} = useVoiceNavigation(commandsMap);
+
   const renderData = ({item, index}) => {
     return (
       <View style={styles.foodItemsView}>
@@ -206,7 +183,7 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#f6f6f6'} barStyle={'dark-content'} />
-      <Button title="Start Voice" onPress={getPermission} />
+      <Button title="Start Voice" onPress={() => startListening()} />
       <View style={styles.inputFilterView}>
         <View style={styles.inputFilterInsideView}>
           <TextInput placeholder="Search food" style={styles.inputTextStyle} />

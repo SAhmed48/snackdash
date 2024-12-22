@@ -16,9 +16,9 @@ import 'react-native-get-random-values';
 import Feather from 'react-native-vector-icons/Feather';
 import styles from './styles';
 
-MapboxGL.setAccessToken('');
+MapboxGL.setAccessToken('sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q');
 MapboxGL.setTelemetryEnabled(false);
-Geocoder.init('');
+Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
 
 const MyLocation = () => {
   const [location, setLocation] = useState('');

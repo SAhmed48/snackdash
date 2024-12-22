@@ -21,9 +21,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Images from '../../Constants/Images';
 import styles from './styles';
 
-MapboxGL.setAccessToken('');
+MapboxGL.setAccessToken('sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q');
 MapboxGL.setTelemetryEnabled(false);
-Geocoder.init('');
+Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
 
 const Track = () => {
   const [location, setLocation] = useState('');

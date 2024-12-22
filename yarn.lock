@@ -7193,10 +7193,10 @@ react-native-vector-icons@^10.2.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native-voice-command@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-voice-command/-/react-native-voice-command-1.0.1.tgz#b49830bd7af006ffbea2b54c1928ff6cf29d6c25"
-  integrity sha512-+AAySyisjSvonnMFBWW2etF5XSr6t1APJ7v3pazDFv3zihzFhLc0J9XA1HAJinxklR8b68pvB/IO5MN4QOUUsw==
+react-native-voice-command@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-voice-command/-/react-native-voice-command-1.0.3.tgz#cf50faaec02304f1fc0b5b8c20a9c670c25a33e0"
+  integrity sha512-FqLXE0TrAdCfQAR6f96rmm77ccwdq/zTl9ee0Vf/06ljuEwLFTZiIsozQMX0T1nXKpFyDjA5lzhpk56Rd4S13w==
   dependencies:
     "@react-native-voice/voice" "^3.2.4"
 

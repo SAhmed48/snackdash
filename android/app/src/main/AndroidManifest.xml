@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-package="com.jarvis.sahlah"
 xmlns:tools="http://schemas.android.com/tools"
+package="com.jarvis.sahlah"
 >
 
-  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.RECORD_AUDIO" />
   <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
   <uses-permission android:name="android.permission.ACCEPT_HANDOVER" />
@@ -39,7 +39,6 @@ xmlns:tools="http://schemas.android.com/tools"
   <uses-permission android:name="android.permission.RECEIVE_MMS" />
   <uses-permission android:name="android.permission.RECEIVE_SMS" />
   <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
-  <uses-permission android:name="android.permission.RECORD_AUDIO" />
   <uses-permission android:name="android.permission.SEND_SMS" />
   <uses-permission android:name="android.permission.USE_SIP" />
   <uses-permission android:name="android.permission.UWB_RANGING" />
@@ -55,7 +54,9 @@ xmlns:tools="http://schemas.android.com/tools"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme"
-      android:supportsRtl="true">
+      android:supportsRtl="true"
+      android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+      tools:replace="android:appComponentFactory">
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"

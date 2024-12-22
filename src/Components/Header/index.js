@@ -15,7 +15,7 @@ import {emptyCart, setMapData} from '../../Redux/Action';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 
-Geocoder.init('');
+Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
 
 const Header = () => {
   const [expanded, setExpanded] = React.useState(false);
