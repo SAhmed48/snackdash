@@ -6,8 +6,8 @@ buildscript {
         targetSdkVersion = 34
         ndkVersion = "26.1.10909125"
         kotlinVersion = "1.9.24"
-        RNMapboxMapsImpl = "mapbox" 
-        RNMapboxMapsVersion = '11.0.0'
+        // RNMapboxMapsImpl = "mapbox" 
+        // RNMapboxMapsVersion = '11.0.0'
 
     }
 
@@ -26,37 +26,37 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url("$rootDir/../node_modules/react-native/android") }
-        maven { url("$rootDir/../node_modules/jsc-android/dist") }
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-        maven { url 'https://www.jitpack.io' }
-        maven {
-            url 'https://api.mapbox.com/downloads/v2/releases/maven'
-            authentication {
-                basic(BasicAuthentication)
-            }
-            credentials {
-                username = 'mapbox'
-                password = project.properties['MAPBOX_DOWNLOADS_TOKEN'] ?: ""
-            }
-        }
-    }
-}
+// allprojects {
+//     repositories {
+//         google()
+//         mavenCentral()
+//         maven { url("$rootDir/../node_modules/react-native/android") }
+//         maven { url("$rootDir/../node_modules/jsc-android/dist") }
+//         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+//         maven { url 'https://www.jitpack.io' }
+//         maven {
+//             url 'https://api.mapbox.com/downloads/v2/releases/maven'
+//             authentication {
+//                 basic(BasicAuthentication)
+//             }
+//             credentials {
+//                 username = 'mapbox'
+//                 password = project.properties['MAPBOX_DOWNLOADS_TOKEN'] ?: ""
+//             }
+//         }
+//     }
+// }
 
-subprojects {
-    afterEvaluate { project ->
-        project.configurations.all {
-            resolutionStrategy.eachDependency { details ->
-                if (details.requested.group == 'com.facebook.react' && details.requested.name == 'react-android') {
-                    details.useVersion "0.76.5"
-                }
-            }
-        }
-    }
-}
+// subprojects {
+//     afterEvaluate { project ->
+//         project.configurations.all {
+//             resolutionStrategy.eachDependency { details ->
+//                 if (details.requested.group == 'com.facebook.react' && details.requested.name == 'react-android') {
+//                     details.useVersion "0.76.5"
+//                 }
+//             }
+//         }
+//     }
+// }
 
 apply plugin: "com.facebook.react.rootproject"

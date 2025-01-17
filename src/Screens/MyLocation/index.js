@@ -9,15 +9,15 @@ import {
 } from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import Geolocation from '@react-native-community/geolocation';
-import MapboxGL from '@rnmapbox/maps';
+// import MapboxGL from '@rnmapbox/maps';
 import Octicons from 'react-native-vector-icons/Octicons';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import 'react-native-get-random-values';
 import Feather from 'react-native-vector-icons/Feather';
 import styles from './styles';
 
-MapboxGL.setAccessToken('sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q');
-MapboxGL.setTelemetryEnabled(false);
+// MapboxGL.setAccessToken('sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q');
+// MapboxGL.setTelemetryEnabled(false);
 Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
 
 const MyLocation = () => {
@@ -56,7 +56,7 @@ const MyLocation = () => {
       <StatusBar backgroundColor={'#f6f6f6'} />
       <View style={styles.topView} />
       <View style={styles.mapContainer}>
-        <MapboxGL.MapView
+        {/* <MapboxGL.MapView
           style={StyleSheet.absoluteFillObject}
           zoomEnabled={true}
           styleURL="mapbox://styles/mapbox/navigation-day-v1"
@@ -74,7 +74,7 @@ const MyLocation = () => {
             id="user-location-marker"
             coordinate={coordinates}
           />
-        </MapboxGL.MapView>
+        </MapboxGL.MapView> */}
         <View style={styles.googlePlacesView}>
           <GooglePlacesAutocomplete
             placeholder="Find Your Location"

@@ -10,19 +10,19 @@ import {
 } from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import Geolocation from '@react-native-community/geolocation';
-import MapboxGL from '@rnmapbox/maps';
+// import MapboxGL from '@rnmapbox/maps';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import axios from 'axios';
+// import axios from 'axios';
 import {horizontalScale} from '../../Utils/ScaleSize';
 import {ProgressBar} from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Images from '../../Constants/Images';
 import styles from './styles';
 
-MapboxGL.setAccessToken('sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q');
-MapboxGL.setTelemetryEnabled(false);
+// MapboxGL.setAccessToken('sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q');
+// MapboxGL.setTelemetryEnabled(false);
 Geocoder.init('AIzaSyAnCBabQvD0I74Kqtq6iKedPp_FiidK2dA');
 
 const Track = () => {
@@ -77,23 +77,23 @@ const Track = () => {
   }, []);
 
   const getRoute = useCallback(async (origin, destination) => {
-    try {
-      const response = await axios.get(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${origin[0]},${origin[1]};${destination[0]},${destination[1]}?geometries=geojson&access_token=sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q`,
-      );
-      const data = response.data; // Axios auto-parses JSON
-      const coordinates = data.routes[0]?.geometry.coordinates || [];
-      if (coordinates.length === 0) {
-        console.error('No coordinates in the route');
-        return;
-      }
-      setRouteCoordinates(coordinates);
-    } catch (error) {
-      console.error(
-        'Error fetching route:',
-        error?.response?.data || error.message,
-      );
-    }
+    // try {
+    //   const response = await axios.get(
+    //     `https://api.mapbox.com/directions/v5/mapbox/driving/${origin[0]},${origin[1]};${destination[0]},${destination[1]}?geometries=geojson&access_token=sk.eyJ1IjoibXVoYW1tYWRhbGkxOCIsImEiOiJjbTRmbGJ1N2wxNHNvMmtzODl6bG0xNXlxIn0.nPL3nNTRhRks0gFuvIeu-Q`,
+    //   );
+    //   const data = response.data; // Axios auto-parses JSON
+    //   const coordinates = data.routes[0]?.geometry.coordinates || [];
+    //   if (coordinates.length === 0) {
+    //     console.error('No coordinates in the route');
+    //     return;
+    //   }
+    //   setRouteCoordinates(coordinates);
+    // } catch (error) {
+    //   console.error(
+    //     'Error fetching route:',
+    //     error?.response?.data || error.message,
+    //   );
+    // }
   }, []);
 
   useEffect(() => {
@@ -185,7 +185,7 @@ const Track = () => {
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={'#f6f6f6'} />
         <View style={StyleSheet.absoluteFillObject}>
-          <MapboxGL.MapView
+          {/* //<MapboxGL.MapView
             style={styles.mapContainer}
             styleURL="mapbox://styles/mapbox/navigation-night-v1"
             zoomEnabled
@@ -220,7 +220,7 @@ const Track = () => {
                 />
               </MapboxGL.ShapeSource>
             )}
-          </MapboxGL.MapView>
+          </MapboxGL.MapView> */}
         </View>
         {sheet && (
           <View style={{flex: 1}}>
